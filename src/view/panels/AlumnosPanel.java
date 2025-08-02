@@ -33,7 +33,7 @@ public class AlumnosPanel extends JPanel {
     }
 
     private List<AlumnoVisual> cargarListaAlumnos() {
-        return alumnoController.cargarAlumnos().stream()
+        return alumnoController.obtenerTodos().stream()
                 .map(a -> new AlumnoVisual(a.getNombre(), a.getLegajo()))
                 .collect(Collectors.toList());
     }

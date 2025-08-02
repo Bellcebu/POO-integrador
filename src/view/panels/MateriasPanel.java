@@ -31,7 +31,7 @@ public class MateriasPanel extends JPanel {
     }
 
     private List<MyLayout.AlumnoVisual> cargarListaMaterias() {
-        return materiaController.cargarMaterias().stream()
+        return materiaController.obtenerTodas().stream()
                 .map(m -> new MyLayout.AlumnoVisual(m.getNombre(), m.getCodigo())) // usando AlumnoVisual para nombre/código
                 .collect(Collectors.toList());
     }

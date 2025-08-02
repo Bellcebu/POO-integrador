@@ -42,7 +42,6 @@ public class Materia {
         return correlativas;
     }
 
-    // NUEVO: Helper para obtener códigos de correlativas desde string
     public static String[] getCodigosCorrelativas(String linea) {
         try {
             String[] partes = linea.split(SEPARADOR);
@@ -55,7 +54,6 @@ public class Materia {
         return new String[0];
     }
 
-    //funcion add
     public void agregarCorrelativa(Materia m) {
         correlativas.add(m);
     }

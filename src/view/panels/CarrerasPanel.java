@@ -31,7 +31,7 @@ public class CarrerasPanel extends JPanel {
     }
 
     private List<MyLayout.AlumnoVisual> cargarListaCarreras() {
-        return carreraController.cargarCarreras().stream()
+        return carreraController.obtenerTodas().stream()
                 .map(c -> new MyLayout.AlumnoVisual(c.getNombre(), c.getCodigo())) // usa AlumnoVisual aunque es para mostrar nombre/codigo
                 .collect(Collectors.toList());
     }
