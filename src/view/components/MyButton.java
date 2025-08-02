@@ -158,4 +158,13 @@ public class MyButton extends JButton {
         return btn;
     }
 
+    public static MyButton ordenar(String texto, ActionListener listener) {
+        MyButton btn = new MyButton(texto, listener);
+        btn.setBackground(ThemeConfig.COLOR_ACTUALIZAR);
+        btn.setForeground(ThemeConfig.COLOR_TEXTO);
+        btn.setToolTipText("Ordenar lista");
+        btn.setPreferredSize(new Dimension(100, 35));
+        return btn;
+    }
+
 }

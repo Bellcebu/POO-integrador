@@ -46,6 +46,100 @@ public class Facultad {
         }
     }
 
+    // Métodos de búsqueda
+    public List<Alumno> buscarAlumnos(String textoBusqueda) {
+        if (textoBusqueda == null || textoBusqueda.trim().isEmpty()) {
+            return new ArrayList<>(alumnos);
+        }
+
+        String busqueda = textoBusqueda.trim().toLowerCase();
+        List<Alumno> resultados = new ArrayList<>();
+
+        for (Alumno alumno : alumnos) {
+            if (alumno.getNombre().toLowerCase().contains(busqueda) ||
+                    alumno.getLegajo().toLowerCase().contains(busqueda)) {
+                resultados.add(alumno);
+            }
+        }
+
+        return resultados;
+    }
+
+    // Métodos de búsqueda y ordenamiento para CARRERAS
+    public List<Carrera> buscarCarreras(String textoBusqueda) {
+        if (textoBusqueda == null || textoBusqueda.trim().isEmpty()) {
+            return new ArrayList<>(carreras);
+        }
+
+        String busqueda = textoBusqueda.trim().toLowerCase();
+        List<Carrera> resultados = new ArrayList<>();
+
+        for (Carrera carrera : carreras) {
+            if (carrera.getNombre().toLowerCase().contains(busqueda) ||
+                    carrera.getCodigo().toLowerCase().contains(busqueda)) {
+                resultados.add(carrera);
+            }
+        }
+
+        return resultados;
+    }
+
+    public List<Carrera> ordenarCarrerasAZ() {
+        List<Carrera> carrerasOrdenadas = new ArrayList<>(carreras);
+        carrerasOrdenadas.sort((c1, c2) -> c1.getNombre().compareToIgnoreCase(c2.getNombre()));
+        return carrerasOrdenadas;
+    }
+
+    public List<Carrera> ordenarCarrerasZA() {
+        List<Carrera> carrerasOrdenadas = new ArrayList<>(carreras);
+        carrerasOrdenadas.sort((c1, c2) -> c2.getNombre().compareToIgnoreCase(c1.getNombre()));
+        return carrerasOrdenadas;
+    }
+
+    // Métodos de búsqueda y ordenamiento para MATERIAS
+    public List<Materia> buscarMaterias(String textoBusqueda) {
+        if (textoBusqueda == null || textoBusqueda.trim().isEmpty()) {
+            return new ArrayList<>(materias);
+        }
+
+        String busqueda = textoBusqueda.trim().toLowerCase();
+        List<Materia> resultados = new ArrayList<>();
+
+        for (Materia materia : materias) {
+            if (materia.getNombre().toLowerCase().contains(busqueda) ||
+                    materia.getCodigo().toLowerCase().contains(busqueda)) {
+                resultados.add(materia);
+            }
+        }
+
+        return resultados;
+    }
+
+    public List<Materia> ordenarMateriasAZ() {
+        List<Materia> materiasOrdenadas = new ArrayList<>(materias);
+        materiasOrdenadas.sort((m1, m2) -> m1.getNombre().compareToIgnoreCase(m2.getNombre()));
+        return materiasOrdenadas;
+    }
+
+    public List<Materia> ordenarMateriasZA() {
+        List<Materia> materiasOrdenadas = new ArrayList<>(materias);
+        materiasOrdenadas.sort((m1, m2) -> m2.getNombre().compareToIgnoreCase(m1.getNombre()));
+        return materiasOrdenadas;
+    }
+
+    // Métodos de ordenamiento
+    public List<Alumno> ordenarAlumnosAZ() {
+        List<Alumno> alumnosOrdenados = new ArrayList<>(alumnos);
+        alumnosOrdenados.sort((a1, a2) -> a1.getNombre().compareToIgnoreCase(a2.getNombre()));
+        return alumnosOrdenados;
+    }
+
+    public List<Alumno> ordenarAlumnosZA() {
+        List<Alumno> alumnosOrdenados = new ArrayList<>(alumnos);
+        alumnosOrdenados.sort((a1, a2) -> a2.getNombre().compareToIgnoreCase(a1.getNombre()));
+        return alumnosOrdenados;
+    }
+
     private void cargarInscripciones() {
         try {
             java.util.List<String> lineas = java.nio.file.Files.readAllLines(

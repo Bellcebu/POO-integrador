@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class MateriasPanel extends JPanel {
 
     private MateriaController materiaController;
+    private boolean ordenAZ = true;
 
     public MateriasPanel() {
         this.materiaController = new MateriaController();
@@ -23,11 +24,19 @@ public class MateriasPanel extends JPanel {
                 e -> {},  // Crear sin acción
                 e -> {},  // Editar sin acción
                 e -> {},  // Eliminar sin acción
-                e -> {}   // Gestionar sin acción
+                e -> {},   // Gestionar sin acción
+                e -> {ordenAZ = !ordenAZ;actualizarLista();}, ordenAZ ? "A→Z" : "Z→A"
         );
 
         setLayout(new BorderLayout());
         add(seccionMaterias, BorderLayout.CENTER);
+    }
+
+    private void actualizarLista() {
+        removeAll();
+        configurarPanel();
+        revalidate();
+        repaint();
     }
 
     private List<MyLayout.AlumnoVisual> cargarListaMaterias() {

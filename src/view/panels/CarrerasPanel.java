@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 public class CarrerasPanel extends JPanel {
 
     private CarreraController carreraController;
+    private boolean ordenAZ = true;
 
     public CarrerasPanel() {
         this.carreraController = new CarreraController();
@@ -23,11 +24,19 @@ public class CarrerasPanel extends JPanel {
                 e -> {},  // Crear
                 e -> {},  // Editar
                 e -> {},  // Eliminar
-                e -> {}   // Gestionar
+                e -> {} ,  // Gestionar
+                e -> {ordenAZ = !ordenAZ;actualizarLista();}, ordenAZ ? "A→Z" : "Z→A"
         );
 
         setLayout(new BorderLayout());
         add(seccionCarreras, BorderLayout.CENTER);
+    }
+
+    private void actualizarLista() {
+        removeAll();
+        configurarPanel();
+        revalidate();
+        repaint();
     }
 
     private List<MyLayout.AlumnoVisual> cargarListaCarreras() {

@@ -9,12 +9,12 @@ import java.util.List;
 
 public class MyLayout {
 
-    public static JPanel crearSeccion(String titulo, List<AlumnoVisual> elementos, ActionListener onCrear, ActionListener onEditar, ActionListener onEliminar, ActionListener onGestionar) {
+    public static JPanel crearSeccion(String titulo, List<AlumnoVisual> elementos, ActionListener onCrear, ActionListener onEditar, ActionListener onEliminar, ActionListener onGestionar, ActionListener onOrdenar, String textoOrdenar) {
         JPanel seccionPanel = new JPanel(new BorderLayout());
         seccionPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         seccionPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JPanel headerPanel = crearHeader(titulo, onCrear);
+        JPanel headerPanel = crearHeader(titulo, onCrear, onOrdenar, textoOrdenar);
         JPanel listaPanel = crearLista(elementos, onEditar, onEliminar, onGestionar);
 
         MyScroll scroll = MyScroll.crearVertical(listaPanel);
@@ -24,17 +24,27 @@ public class MyLayout {
         return seccionPanel;
     }
 
-    private static JPanel crearHeader(String titulo, ActionListener onCrear) {
+    private static JPanel crearHeader(String titulo, ActionListener onCrear, ActionListener onOrdenar, String textoOrdenar) {
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         headerPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
         MyLabel tituloLabel = MyLabel.titulo(titulo);
 
+        // Panel derecho con botones
+        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        panelBotones.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+
+        // Botón ordenar (siempre presente pero sin acción por defecto)
+        MyButton btnOrdenar = MyButton.ordenar(textoOrdenar, onOrdenar);
+        panelBotones.add(btnOrdenar);
+
+        // Botón crear
         MyButton btnCrear = MyButton.crear("Crear " + titulo.substring(0, titulo.length() - 1), onCrear);
+        panelBotones.add(btnCrear);
 
         headerPanel.add(tituloLabel, BorderLayout.WEST);
-        headerPanel.add(btnCrear, BorderLayout.EAST);
+        headerPanel.add(panelBotones, BorderLayout.EAST);
 
         return headerPanel;
     }
