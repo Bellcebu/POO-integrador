@@ -50,15 +50,12 @@ public class CarrerasPanel extends JPanel {
     }
 
     private List<MyLayout.AlumnoVisual> cargarListaCarreras() {
-        List<Carrera> carreras = Facultad.getInstance().buscarCarreras(textoBusqueda);
-
-        // Aplicar ordenamiento
+        List<Carrera> carreras = carreraController.buscarCarreras(textoBusqueda);
         if (ordenAZ) {
             carreras.sort((c1, c2) -> c1.getNombre().compareToIgnoreCase(c2.getNombre()));
         } else {
             carreras.sort((c1, c2) -> c2.getNombre().compareToIgnoreCase(c1.getNombre()));
         }
-
         return carreras.stream()
                 .map(c -> new MyLayout.AlumnoVisual(c.getNombre(), c.getCodigo()))
                 .collect(Collectors.toList());

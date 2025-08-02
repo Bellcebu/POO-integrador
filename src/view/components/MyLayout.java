@@ -59,7 +59,7 @@ public class MyLayout {
             txtBuscar.setName("campoBusqueda");
             panelCentro.add(txtBuscar);
 
-            MyButton btnBuscar = MyButton.info("Buscar", e -> {
+            MyButton btnBuscar = MyButton.boton4("Buscar", e -> {
                 String textoBusqueda = txtBuscar.getText();
                 ActionEvent evento = new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, textoBusqueda);
                 onBuscar.actionPerformed(evento);
@@ -70,10 +70,10 @@ public class MyLayout {
         JPanel panelDerecho = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         panelDerecho.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
-        MyButton btnOrdenar = MyButton.ordenar(textoOrdenar, onOrdenar);
+        MyButton btnOrdenar = MyButton.boton8(textoOrdenar, onOrdenar);
         panelDerecho.add(btnOrdenar);
 
-        MyButton btnCrear = MyButton.crear("Crear " + titulo.substring(0, titulo.length() - 1), onCrear);
+        MyButton btnCrear = MyButton.boton1("Crear " + titulo.substring(0, titulo.length() - 1), onCrear);
         panelDerecho.add(btnCrear);
 
         headerPanel.add(panelIzquierdo, BorderLayout.WEST);
@@ -130,11 +130,11 @@ public class MyLayout {
         JPanel botonesPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         botonesPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
-        MyButton btnEditar = MyButton.editar("Editar", e -> {
+        MyButton btnEditar = MyButton.boton2("Editar", e -> {
             onEditar.actionPerformed(new java.awt.event.ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, alumno.legajo()));
         });
 
-        MyButton btnEliminar = MyButton.eliminar("Eliminar", e -> {
+        MyButton btnEliminar = MyButton.boton3("Eliminar", e -> {
             onEliminar.actionPerformed(new java.awt.event.ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, alumno.legajo()));
         });
 
@@ -142,7 +142,7 @@ public class MyLayout {
         botonesPanel.add(btnEliminar);
 
         if (onGestionar != null) {
-            MyButton btnGestionar = MyButton.info("Gestionar", e -> {
+            MyButton btnGestionar = MyButton.boton4("Gestionar", e -> {
                 onGestionar.actionPerformed(new java.awt.event.ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, alumno.legajo()));
             });
             botonesPanel.add(btnGestionar);

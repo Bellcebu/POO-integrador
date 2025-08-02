@@ -81,6 +81,15 @@ public class Materia {
         return sb.toString();
     }
 
+    public static Materia buscarPorCodigo(String codigo, List<Materia> materias) {
+        for (Materia materia : materias) {
+            if (materia.getCodigo().equals(codigo)) {
+                return materia;
+            }
+        }
+        return null;
+    }
+
     public static Materia fromString(String linea) {
         try {
             String[] partes = linea.split(SEPARADOR);

@@ -71,7 +71,7 @@ public class MyButton extends JButton {
     }
 
 
-    public static MyButton crear(String texto, ActionListener listener) {
+    public static MyButton boton1(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_CREAR);
         btn.setForeground(ThemeConfig.COLOR_TEXTO);
@@ -79,7 +79,7 @@ public class MyButton extends JButton {
         return btn;
     }
 
-    public static MyButton editar(String texto, ActionListener listener) {
+    public static MyButton boton2(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_EDITAR);
         btn.setForeground(ThemeConfig.COLOR_TEXTO);
@@ -88,7 +88,7 @@ public class MyButton extends JButton {
         return btn;
     }
 
-    public static MyButton eliminar(String texto, ActionListener listener) {
+    public static MyButton boton3(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_ELIMINAR);
         btn.setForeground(ThemeConfig.COLOR_TEXTO);
@@ -97,7 +97,7 @@ public class MyButton extends JButton {
         return btn;
     }
 
-    public static MyButton info(String texto, ActionListener listener) {
+    public static MyButton boton4(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_ACTUALIZAR);
         btn.setForeground(ThemeConfig.COLOR_TEXTO);
@@ -106,7 +106,7 @@ public class MyButton extends JButton {
         return btn;
     }
 
-    public static MyButton refrescar(String texto, ActionListener listener) {
+    public static MyButton boton5(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_ACTUALIZAR);
         btn.setForeground(ThemeConfig.COLOR_TEXTO);
@@ -140,7 +140,7 @@ public class MyButton extends JButton {
         return btn;
     }
 
-    public static MyButton general1(String texto, ActionListener listener) {
+    public static MyButton boton6(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_CREAR);
         btn.setForeground(ThemeConfig.COLOR_TEXTO);
@@ -149,7 +149,7 @@ public class MyButton extends JButton {
         return btn;
     }
 
-    public static MyButton general2(String texto, ActionListener listener) {
+    public static MyButton boton7(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_ELIMINAR);
         btn.setForeground(ThemeConfig.COLOR_TEXTO);
@@ -158,7 +158,7 @@ public class MyButton extends JButton {
         return btn;
     }
 
-    public static MyButton ordenar(String texto, ActionListener listener) {
+    public static MyButton boton8(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_ACTUALIZAR);
         btn.setForeground(ThemeConfig.COLOR_TEXTO);

@@ -50,9 +50,8 @@ public class MateriasPanel extends JPanel {
     }
 
     private List<MyLayout.AlumnoVisual> cargarListaMaterias() {
-        List<Materia> materias = Facultad.getInstance().buscarMaterias(textoBusqueda);
+        List<Materia> materias = materiaController.buscarMaterias(textoBusqueda);
 
-        // Aplicar ordenamiento
         if (ordenAZ) {
             materias.sort((m1, m2) -> m1.getNombre().compareToIgnoreCase(m2.getNombre()));
         } else {

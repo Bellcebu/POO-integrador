@@ -50,6 +50,15 @@ public class Alumno {
         return false;
     }
 
+    public static Alumno buscarPorLegajo(String legajo, List<Alumno> alumnos) {
+        for (Alumno alumno : alumnos) {
+            if (alumno.getLegajo().equals(legajo)) {
+                return alumno;
+            }
+        }
+        return null;
+    }
+
     // NUEVO: Obtener materias por estado
     public List<Materia> getMateriasAprobadas() {
         List<Materia> aprobadas = new ArrayList<>();

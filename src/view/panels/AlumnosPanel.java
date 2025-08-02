@@ -30,9 +30,9 @@ public class AlumnosPanel extends JPanel {
         JPanel seccionAlumnos = MyLayout.crearSeccion(
                 "Alumnos",
                 obtenerAlumnosFiltrados(),
-                e -> crearAlumno(),
-                e -> editarAlumno(e.getActionCommand()),
-                e -> eliminarAlumno(e.getActionCommand()),
+                e -> crearAlumno(), //actionlister usar
+                e -> {},
+                e -> {},
                 e -> {}, // Sin gestionar por ahora
                 e -> { ordenAZ = !ordenAZ; actualizarLista(); },
                 ordenAZ ? "A→Z" : "Z→A",
@@ -47,7 +47,7 @@ public class AlumnosPanel extends JPanel {
     }
 
     private List<MyLayout.AlumnoVisual> obtenerAlumnosFiltrados() {
-        List<Alumno> alumnos = Facultad.getInstance().buscarAlumnos(textoBusqueda);
+        List<Alumno> alumnos = alumnoController.buscarAlumnos(textoBusqueda);
 
         if (ordenAZ) {
             alumnos.sort((a1, a2) -> a1.getNombre().compareToIgnoreCase(a2.getNombre()));
@@ -67,21 +67,7 @@ public class AlumnosPanel extends JPanel {
         repaint();
     }
 
-    private void eliminarAlumno(String legajo) {
-        Alumno alumno = alumnoController.buscarPorLegajo(legajo);
-        if (alumno != null) {
-            formularioAlumno = new AlumnoFormPanel(alumno.getNombre(), alumno.getLegajo(),
-                    e -> {
-                        alumnoController.eliminarAccion(legajo);
-                        volverAListaPrincipal();
-                    },
-                    e -> volverAListaPrincipal(),
-                    true
-            );
-            mostrarFormulario();
-        }
-    }
-
+    //mudar
     private void crearAlumno() {
         formularioAlumno = new AlumnoFormPanel(
                 e -> {
@@ -105,34 +91,6 @@ public class AlumnosPanel extends JPanel {
                 e -> volverAListaPrincipal()
         );
         mostrarFormulario();
-    }
-
-    private void editarAlumno(String legajoViejo) {
-        Alumno alumno = alumnoController.buscarPorLegajo(legajoViejo);
-        if (alumno != null) {
-            formularioAlumno = new AlumnoFormPanel(alumno.getNombre(), alumno.getLegajo(),
-                    e -> {
-                        String nombre = formularioAlumno.getNombre();
-                        String legajo = formularioAlumno.getLegajo();
-
-                        if (nombre.isEmpty() || legajo.isEmpty()) {
-                            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-
-                        boolean exito = alumnoController.editarAccion(legajoViejo, nombre, legajo);
-                        if (exito) {
-                            volverAListaPrincipal();
-                        } else {
-                            JOptionPane.showMessageDialog(this, "Error al editar alumno",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
-                        }
-                    },
-                    e -> volverAListaPrincipal()
-            );
-            mostrarFormulario();
-        }
     }
 
     private void mostrarFormulario() {

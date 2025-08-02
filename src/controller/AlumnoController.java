@@ -2,6 +2,8 @@ package controller;
 
 import model.Alumno;
 import model.Facultad;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class AlumnoController {
@@ -12,37 +14,43 @@ public class AlumnoController {
 
     public boolean agregarAccion(String nombre, String legajo) {
         Alumno nuevoAlumno = new Alumno(nombre, legajo);
-        boolean agregado = Facultad.getInstance().agregarAlumno(nuevoAlumno);
 
-        if (agregado) {
-            persistence.ArchivoAlumnos.agregar(nuevoAlumno);
+        for (Alumno a : Facultad.getInstance().getAlumnos()) {
+            if (a.equals(nuevoAlumno)) {
+                return false;
+            }
         }
-        return agregado;
+
+        Facultad.getInstance().getAlumnos().add(nuevoAlumno);
+        persistence.ArchivoAlumnos.agregar(nuevoAlumno);
+
+        return true;
     }
 
-    public boolean editarAccion(String legajoViejo, String nombreNuevo, String legajoNuevo) {
-        Alumno nuevoAlumno = new Alumno(nombreNuevo, legajoNuevo);
-        boolean editado = Facultad.getInstance().editarAlumno(legajoViejo, nuevoAlumno);
-
-        if (editado) {
-            persistence.ArchivoAlumnos.editar(legajoViejo, nuevoAlumno);
+    public List<Alumno> buscarAlumnos(String textoBusqueda) {
+        if (textoBusqueda == null || textoBusqueda.trim().isEmpty()) {
+            return new ArrayList<>(Facultad.getInstance().getAlumnos());
         }
-        return editado;
+
+        String busqueda = textoBusqueda.trim().toLowerCase();
+        List<Alumno> resultados = new ArrayList<>();
+
+        for (Alumno alumno : Facultad.getInstance().getAlumnos()) {
+            if (alumno.getNombre().toLowerCase().contains(busqueda) ||
+                    alumno.getLegajo().toLowerCase().contains(busqueda)) {
+                resultados.add(alumno);
+            }
+        }
+        return resultados;
     }
 
-    public boolean eliminarAccion(String legajo) {
-        boolean eliminar = Facultad.getInstance().eliminarAlumno(legajo);
-
-        if (eliminar) {
-            persistence.ArchivoAlumnos.eliminar(legajo);
+    public List<Alumno> ordenarAlumnos(boolean ordenAZ) {
+        List<Alumno> alumnosOrdenados = new ArrayList<>(Facultad.getInstance().getAlumnos());
+        if (ordenAZ) {
+            alumnosOrdenados.sort((a1, a2) -> a1.getNombre().compareToIgnoreCase(a2.getNombre()));
+        } else {
+            alumnosOrdenados.sort((a1, a2) -> a2.getNombre().compareToIgnoreCase(a1.getNombre()));
         }
-        return eliminar;
-    }
-
-    public Alumno buscarPorLegajo(String legajo) {
-        return Facultad.getInstance().getAlumnos().stream()
-                .filter(a -> a.getLegajo().equals(legajo))
-                .findFirst()
-                .orElse(null);
+        return alumnosOrdenados;
     }
 }

@@ -1,5 +1,8 @@
 package model;
 
+import controller.AlumnoController;
+import controller.MateriaController;
+
 import java.util.*;
 
 public class Facultad {
@@ -8,6 +11,8 @@ public class Facultad {
     private List<Alumno> alumnos;
     private List<Materia> materias;
     private List<InscripcionMateria> inscripciones;
+    private AlumnoController alumnoController;
+    private MateriaController materiaController;
 
     // Patrón singleton
     private Facultad() {
@@ -46,100 +51,6 @@ public class Facultad {
         }
     }
 
-    // Métodos de búsqueda
-    public List<Alumno> buscarAlumnos(String textoBusqueda) {
-        if (textoBusqueda == null || textoBusqueda.trim().isEmpty()) {
-            return new ArrayList<>(alumnos);
-        }
-
-        String busqueda = textoBusqueda.trim().toLowerCase();
-        List<Alumno> resultados = new ArrayList<>();
-
-        for (Alumno alumno : alumnos) {
-            if (alumno.getNombre().toLowerCase().contains(busqueda) ||
-                    alumno.getLegajo().toLowerCase().contains(busqueda)) {
-                resultados.add(alumno);
-            }
-        }
-
-        return resultados;
-    }
-
-    // Métodos de búsqueda y ordenamiento para CARRERAS
-    public List<Carrera> buscarCarreras(String textoBusqueda) {
-        if (textoBusqueda == null || textoBusqueda.trim().isEmpty()) {
-            return new ArrayList<>(carreras);
-        }
-
-        String busqueda = textoBusqueda.trim().toLowerCase();
-        List<Carrera> resultados = new ArrayList<>();
-
-        for (Carrera carrera : carreras) {
-            if (carrera.getNombre().toLowerCase().contains(busqueda) ||
-                    carrera.getCodigo().toLowerCase().contains(busqueda)) {
-                resultados.add(carrera);
-            }
-        }
-
-        return resultados;
-    }
-
-    public List<Carrera> ordenarCarrerasAZ() {
-        List<Carrera> carrerasOrdenadas = new ArrayList<>(carreras);
-        carrerasOrdenadas.sort((c1, c2) -> c1.getNombre().compareToIgnoreCase(c2.getNombre()));
-        return carrerasOrdenadas;
-    }
-
-    public List<Carrera> ordenarCarrerasZA() {
-        List<Carrera> carrerasOrdenadas = new ArrayList<>(carreras);
-        carrerasOrdenadas.sort((c1, c2) -> c2.getNombre().compareToIgnoreCase(c1.getNombre()));
-        return carrerasOrdenadas;
-    }
-
-    // Métodos de búsqueda y ordenamiento para MATERIAS
-    public List<Materia> buscarMaterias(String textoBusqueda) {
-        if (textoBusqueda == null || textoBusqueda.trim().isEmpty()) {
-            return new ArrayList<>(materias);
-        }
-
-        String busqueda = textoBusqueda.trim().toLowerCase();
-        List<Materia> resultados = new ArrayList<>();
-
-        for (Materia materia : materias) {
-            if (materia.getNombre().toLowerCase().contains(busqueda) ||
-                    materia.getCodigo().toLowerCase().contains(busqueda)) {
-                resultados.add(materia);
-            }
-        }
-
-        return resultados;
-    }
-
-    public List<Materia> ordenarMateriasAZ() {
-        List<Materia> materiasOrdenadas = new ArrayList<>(materias);
-        materiasOrdenadas.sort((m1, m2) -> m1.getNombre().compareToIgnoreCase(m2.getNombre()));
-        return materiasOrdenadas;
-    }
-
-    public List<Materia> ordenarMateriasZA() {
-        List<Materia> materiasOrdenadas = new ArrayList<>(materias);
-        materiasOrdenadas.sort((m1, m2) -> m2.getNombre().compareToIgnoreCase(m1.getNombre()));
-        return materiasOrdenadas;
-    }
-
-    // Métodos de ordenamiento
-    public List<Alumno> ordenarAlumnosAZ() {
-        List<Alumno> alumnosOrdenados = new ArrayList<>(alumnos);
-        alumnosOrdenados.sort((a1, a2) -> a1.getNombre().compareToIgnoreCase(a2.getNombre()));
-        return alumnosOrdenados;
-    }
-
-    public List<Alumno> ordenarAlumnosZA() {
-        List<Alumno> alumnosOrdenados = new ArrayList<>(alumnos);
-        alumnosOrdenados.sort((a1, a2) -> a2.getNombre().compareToIgnoreCase(a1.getNombre()));
-        return alumnosOrdenados;
-    }
-
     private void cargarInscripciones() {
         try {
             java.util.List<String> lineas = java.nio.file.Files.readAllLines(
@@ -155,8 +66,8 @@ public class Facultad {
                         boolean finalAprobado = Boolean.parseBoolean(partes[3].trim());
                         boolean promocionado = Boolean.parseBoolean(partes[4].trim());
 
-                        Alumno alumno = buscarAlumnoPorLegajo(legajoAlumno);
-                        Materia materia = buscarMateriaPorCodigo(codigoMateria);
+                        Alumno alumno = Alumno.buscarPorLegajo(legajoAlumno, alumnos);
+                        Materia materia = Materia.buscarPorCodigo(codigoMateria, materias);
 
                         if (alumno != null && materia != null) {
                             InscripcionMateria inscripcion = new InscripcionMateria(alumno, materia);
@@ -177,23 +88,9 @@ public class Facultad {
         }
     }
 
-    private Alumno buscarAlumnoPorLegajo(String legajo) {
-        for (Alumno alumno : alumnos) {
-            if (alumno.getLegajo().equals(legajo)) {
-                return alumno;
-            }
-        }
-        return null;
-    }
 
-    private Materia buscarMateriaPorCodigo(String codigo) {
-        for (Materia materia : materias) {
-            if (materia.getCodigo().equals(codigo)) {
-                return materia;
-            }
-        }
-        return null;
-    }
+
+
 
     // Métodos para editar
     public boolean editarAlumno(String legajoViejo, Alumno nuevoAlumno) {
@@ -206,18 +103,7 @@ public class Facultad {
         return false;
     }
 
-    // Métodos para eliminar
-    public boolean eliminarAlumno(String legajo) {
-        return alumnos.removeIf(a -> a.getLegajo().equals(legajo));
-    }
 
-    public boolean eliminarCarrera(String codigo) {
-        return carreras.removeIf(c -> c.getCodigo().equals(codigo));
-    }
-
-    public boolean eliminarMateria(String codigo) {
-        return materias.removeIf(m -> m.getCodigo().equals(codigo));
-    }
 
     public static Facultad getInstance() {
         if (instance == null) {
@@ -314,20 +200,6 @@ public class Facultad {
         return materias;
     }
 
-    // Métodos add básicos
-    public void agregarCarrera(Carrera carrera) {
-        carreras.add(carrera);
-    }
-
-    public boolean agregarAlumno(Alumno alumno) {
-        for (Alumno a : alumnos) {
-            if (a.equals(alumno)) {
-                return false;
-            }
-        }
-        alumnos.add(alumno);
-        return true;
-    }
 
     @Override
     public String toString() {

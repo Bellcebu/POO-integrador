@@ -78,13 +78,13 @@ public class AlumnoFormPanel extends JPanel {
                 BorderFactory.createEmptyBorder(5, 8, 5, 8)
         ));
 
-        btnGuardar = MyButton.general1("Guardar", onGuardar);
-        btnCancelar = MyButton.general2("Cancelar", onCancelar);
+        btnGuardar = MyButton.boton6("Guardar", onGuardar);
+        btnCancelar = MyButton.boton7("Cancelar", onCancelar);
     }
 
     private void crearComponentesEliminar() {
-        btnGuardar = MyButton.general1("Confirmar", onGuardar);
-        btnCancelar = MyButton.general2("Cancelar", onCancelar);
+        btnGuardar = MyButton.boton6("Confirmar", onGuardar);
+        btnCancelar = MyButton.boton7("Cancelar", onCancelar);
     }
 
     private void configurarLayout() {
