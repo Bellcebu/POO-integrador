@@ -1,10 +1,3 @@
-Juan Carlos Pérez☆2023001
-María Elena García☆2023002
-Carlos Alberto Rodríguez☆2023003
-Ana Lucía Fernández☆2023004
-José Manuel López☆2023005
-Pedro Héctor Martínez☆2023006
-Lucía Soledad Sánchez☆2023007
 Miguel Ángel Romero☆2023008
 Carla Isabel Giménez☆2023009
 David Alejandro Castro☆2023010
@@ -38,3 +31,4 @@ Teresa Inés Gutiérrez☆2020002
 Marcos Daniel Acosta☆2020003
 Silvana Paola Jiménez☆2020004
 Nicolás Gabriel Medina☆2020005
+pedro sanchez☆1234567

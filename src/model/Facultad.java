@@ -101,6 +101,30 @@ public class Facultad {
         return null;
     }
 
+    // Métodos para editar
+    public boolean editarAlumno(String legajoViejo, Alumno nuevoAlumno) {
+        for (int i = 0; i < alumnos.size(); i++) {
+            if (alumnos.get(i).getLegajo().equals(legajoViejo)) {
+                alumnos.set(i, nuevoAlumno);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Métodos para eliminar
+    public boolean eliminarAlumno(String legajo) {
+        return alumnos.removeIf(a -> a.getLegajo().equals(legajo));
+    }
+
+    public boolean eliminarCarrera(String codigo) {
+        return carreras.removeIf(c -> c.getCodigo().equals(codigo));
+    }
+
+    public boolean eliminarMateria(String codigo) {
+        return materias.removeIf(m -> m.getCodigo().equals(codigo));
+    }
+
     public static Facultad getInstance() {
         if (instance == null) {
             instance = new Facultad();

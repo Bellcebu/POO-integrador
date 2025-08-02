@@ -140,4 +140,22 @@ public class MyButton extends JButton {
         return btn;
     }
 
+    public static MyButton general1(String texto, ActionListener listener) {
+        MyButton btn = new MyButton(texto, listener);
+        btn.setBackground(ThemeConfig.COLOR_CREAR);
+        btn.setForeground(ThemeConfig.COLOR_TEXTO);
+        btn.setToolTipText("Guardar cambios");
+        btn.setPreferredSize(new Dimension(100, 35));
+        return btn;
+    }
+
+    public static MyButton general2(String texto, ActionListener listener) {
+        MyButton btn = new MyButton(texto, listener);
+        btn.setBackground(ThemeConfig.COLOR_ELIMINAR);
+        btn.setForeground(ThemeConfig.COLOR_TEXTO);
+        btn.setToolTipText("Cancelar operación");
+        btn.setPreferredSize(new Dimension(100, 35));
+        return btn;
+    }
+
 }
