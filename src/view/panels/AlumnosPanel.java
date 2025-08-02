@@ -2,12 +2,9 @@ package view.panels;
 
 import model.Alumno;
 import model.Facultad;
-import view.components.MyButton;
-import view.components.MyLabel;
 import view.components.MyLayout;
 import view.components.MyLayout.AlumnoVisual;
 import controller.AlumnoController;
-import view.components.MyTextField;
 import view.config.ThemeConfig;
 
 import javax.swing.*;
@@ -19,9 +16,8 @@ public class AlumnosPanel extends JPanel {
 
     private AlumnoController alumnoController;
     private AlumnoFormPanel formularioAlumno;
-    private MyTextField txtBuscar;
-    private boolean ordenAZ = true;
-
+    private boolean ordenAZ = false;
+    private String textoBusqueda = ""; // Mantener el estado de búsqueda
 
     public AlumnosPanel() {
         this.alumnoController = new AlumnoController();
@@ -31,38 +27,26 @@ public class AlumnosPanel extends JPanel {
     private void configurarPanel() {
         setLayout(new BorderLayout());
 
-        JPanel panelSuperior = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panelSuperior.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-        panelSuperior.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
-
-        panelSuperior.add(MyLabel.texto("Buscar:"));
-
-        txtBuscar = new MyTextField(20);
-        txtBuscar.setToolTipText("Buscar por nombre o legajo");
-        txtBuscar.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            public void changedUpdate(javax.swing.event.DocumentEvent e) { actualizarLista(); }
-            public void removeUpdate(javax.swing.event.DocumentEvent e) { actualizarLista(); }
-            public void insertUpdate(javax.swing.event.DocumentEvent e) { actualizarLista(); }
-        });
-        panelSuperior.add(txtBuscar);
-
         JPanel seccionAlumnos = MyLayout.crearSeccion(
                 "Alumnos",
                 obtenerAlumnosFiltrados(),
                 e -> crearAlumno(),
                 e -> editarAlumno(e.getActionCommand()),
                 e -> eliminarAlumno(e.getActionCommand()),
-                e -> {},
-                e -> {ordenAZ = !ordenAZ;actualizarLista();}, ordenAZ ? "A→Z" : "Z→A"
+                e -> {}, // Sin gestionar por ahora
+                e -> { ordenAZ = !ordenAZ; actualizarLista(); },
+                ordenAZ ? "A→Z" : "Z→A",
+                e -> { // NUEVO: ActionListener para búsqueda
+                    textoBusqueda = e.getActionCommand(); // El texto viene en getActionCommand()
+                    actualizarLista();
+                },
+                "Buscar por nombre o legajo" // NUEVO: Placeholder
         );
 
-        add(panelSuperior, BorderLayout.NORTH);
         add(seccionAlumnos, BorderLayout.CENTER);
     }
 
     private List<MyLayout.AlumnoVisual> obtenerAlumnosFiltrados() {
-        String textoBusqueda = txtBuscar != null ? txtBuscar.getText() : "";
-
         List<Alumno> alumnos = Facultad.getInstance().buscarAlumnos(textoBusqueda);
 
         if (ordenAZ) {
@@ -78,33 +62,24 @@ public class AlumnosPanel extends JPanel {
 
     private void actualizarLista() {
         removeAll();
-        configurarPanel(); // ← Esto recreará el botón con el texto correcto
+        configurarPanel();
         revalidate();
         repaint();
     }
 
     private void eliminarAlumno(String legajo) {
         Alumno alumno = alumnoController.buscarPorLegajo(legajo);
-        formularioAlumno = new AlumnoFormPanel(alumno.getNombre(), alumno.getLegajo(),
-                e -> {
-                    alumnoController.eliminarAccion(legajo);
-                    removeAll();
-                    configurarPanel();
-                    revalidate();
-                    repaint();
-                },
-                e -> {
-                    removeAll();
-                    configurarPanel();
-                    revalidate();
-                    repaint();
-                },
-                true
-        );
-        removeAll();
-        add(formularioAlumno, BorderLayout.CENTER);
-        revalidate();
-        repaint();
+        if (alumno != null) {
+            formularioAlumno = new AlumnoFormPanel(alumno.getNombre(), alumno.getLegajo(),
+                    e -> {
+                        alumnoController.eliminarAccion(legajo);
+                        volverAListaPrincipal();
+                    },
+                    e -> volverAListaPrincipal(),
+                    true
+            );
+            mostrarFormulario();
+        }
     }
 
     private void crearAlumno() {
@@ -112,46 +87,64 @@ public class AlumnosPanel extends JPanel {
                 e -> {
                     String nombre = formularioAlumno.getNombre();
                     String legajo = formularioAlumno.getLegajo();
-                    alumnoController.agregarAccion(nombre, legajo);
-                    removeAll();
-                    configurarPanel();
-                    revalidate();
-                    repaint();
+
+                    if (nombre.isEmpty() || legajo.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    boolean exito = alumnoController.agregarAccion(nombre, legajo);
+                    if (exito) {
+                        volverAListaPrincipal();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "El legajo ya existe",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 },
-                e -> {
-                    removeAll();
-                    configurarPanel();
-                    revalidate();
-                    repaint();
-                }
+                e -> volverAListaPrincipal()
         );
+        mostrarFormulario();
+    }
+
+    private void editarAlumno(String legajoViejo) {
+        Alumno alumno = alumnoController.buscarPorLegajo(legajoViejo);
+        if (alumno != null) {
+            formularioAlumno = new AlumnoFormPanel(alumno.getNombre(), alumno.getLegajo(),
+                    e -> {
+                        String nombre = formularioAlumno.getNombre();
+                        String legajo = formularioAlumno.getLegajo();
+
+                        if (nombre.isEmpty() || legajo.isEmpty()) {
+                            JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        boolean exito = alumnoController.editarAccion(legajoViejo, nombre, legajo);
+                        if (exito) {
+                            volverAListaPrincipal();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Error al editar alumno",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    },
+                    e -> volverAListaPrincipal()
+            );
+            mostrarFormulario();
+        }
+    }
+
+    private void mostrarFormulario() {
         removeAll();
         add(formularioAlumno, BorderLayout.CENTER);
         revalidate();
         repaint();
     }
 
-    private void editarAlumno(String legajoViejo) {
-        Alumno alumno = alumnoController.buscarPorLegajo(legajoViejo);
-        formularioAlumno = new AlumnoFormPanel(alumno.getNombre(), alumno.getLegajo(),
-                e -> {
-                    String nombre = formularioAlumno.getNombre();
-                    String legajo = formularioAlumno.getLegajo();
-                    alumnoController.editarAccion(legajoViejo, nombre, legajo);
-                    removeAll();
-                    configurarPanel();
-                    revalidate();
-                    repaint();
-                },
-                e -> {
-                    removeAll();
-                    configurarPanel();
-                    revalidate();
-                    repaint();
-                }
-        );
+    private void volverAListaPrincipal() {
         removeAll();
-        add(formularioAlumno, BorderLayout.CENTER);
+        configurarPanel();
         revalidate();
         repaint();
     }

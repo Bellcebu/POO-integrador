@@ -1,5 +1,7 @@
 package view.panels;
 
+import model.Materia;
+import model.Facultad;
 import view.components.MyLayout;
 import controller.MateriaController;
 import javax.swing.*;
@@ -10,7 +12,8 @@ import java.util.stream.Collectors;
 public class MateriasPanel extends JPanel {
 
     private MateriaController materiaController;
-    private boolean ordenAZ = true;
+    private boolean ordenAZ = false;
+    private String textoBusqueda = "";
 
     public MateriasPanel() {
         this.materiaController = new MateriaController();
@@ -18,17 +21,24 @@ public class MateriasPanel extends JPanel {
     }
 
     private void configurarPanel() {
+        setLayout(new BorderLayout());
+
         JPanel seccionMaterias = MyLayout.crearSeccion(
                 "Materias",
                 cargarListaMaterias(),
-                e -> {},  // Crear sin acción
-                e -> {},  // Editar sin acción
-                e -> {},  // Eliminar sin acción
-                e -> {},   // Gestionar sin acción
-                e -> {ordenAZ = !ordenAZ;actualizarLista();}, ordenAZ ? "A→Z" : "Z→A"
+                e -> {}, // Crear (sin implementar aún)
+                e -> {}, // Editar (sin implementar aún)
+                e -> {}, // Eliminar (sin implementar aún)
+                e -> {}, // Gestionar (sin implementar aún)
+                e -> { ordenAZ = !ordenAZ; actualizarLista(); },
+                ordenAZ ? "A→Z" : "Z→A",
+                e -> { // NUEVO: ActionListener para búsqueda
+                    textoBusqueda = e.getActionCommand();
+                    actualizarLista();
+                },
+                "Buscar por nombre o código" // NUEVO: Placeholder
         );
 
-        setLayout(new BorderLayout());
         add(seccionMaterias, BorderLayout.CENTER);
     }
 
@@ -40,8 +50,17 @@ public class MateriasPanel extends JPanel {
     }
 
     private List<MyLayout.AlumnoVisual> cargarListaMaterias() {
-        return materiaController.obtenerTodas().stream()
-                .map(m -> new MyLayout.AlumnoVisual(m.getNombre(), m.getCodigo())) // usando AlumnoVisual para nombre/código
+        List<Materia> materias = Facultad.getInstance().buscarMaterias(textoBusqueda);
+
+        // Aplicar ordenamiento
+        if (ordenAZ) {
+            materias.sort((m1, m2) -> m1.getNombre().compareToIgnoreCase(m2.getNombre()));
+        } else {
+            materias.sort((m1, m2) -> m2.getNombre().compareToIgnoreCase(m1.getNombre()));
+        }
+
+        return materias.stream()
+                .map(m -> new MyLayout.AlumnoVisual(m.getNombre(), m.getCodigo()))
                 .collect(Collectors.toList());
     }
 }

@@ -1,5 +1,7 @@
 package view.panels;
 
+import model.Carrera;
+import model.Facultad;
 import view.components.MyLayout;
 import controller.CarreraController;
 import javax.swing.*;
@@ -10,7 +12,8 @@ import java.util.stream.Collectors;
 public class CarrerasPanel extends JPanel {
 
     private CarreraController carreraController;
-    private boolean ordenAZ = true;
+    private boolean ordenAZ = false;
+    private String textoBusqueda = "";
 
     public CarrerasPanel() {
         this.carreraController = new CarreraController();
@@ -18,17 +21,24 @@ public class CarrerasPanel extends JPanel {
     }
 
     private void configurarPanel() {
+        setLayout(new BorderLayout());
+
         JPanel seccionCarreras = MyLayout.crearSeccion(
                 "Carreras",
                 cargarListaCarreras(),
-                e -> {},  // Crear
-                e -> {},  // Editar
-                e -> {},  // Eliminar
-                e -> {} ,  // Gestionar
-                e -> {ordenAZ = !ordenAZ;actualizarLista();}, ordenAZ ? "A→Z" : "Z→A"
+                e -> {}, // Crear (sin implementar aún)
+                e -> {}, // Editar (sin implementar aún)
+                e -> {}, // Eliminar (sin implementar aún)
+                e -> {}, // Gestionar (sin implementar aún)
+                e -> { ordenAZ = !ordenAZ; actualizarLista(); },
+                ordenAZ ? "A→Z" : "Z→A",
+                e -> { // NUEVO: ActionListener para búsqueda
+                    textoBusqueda = e.getActionCommand();
+                    actualizarLista();
+                },
+                "Buscar por nombre o código" // NUEVO: Placeholder
         );
 
-        setLayout(new BorderLayout());
         add(seccionCarreras, BorderLayout.CENTER);
     }
 
@@ -40,8 +50,17 @@ public class CarrerasPanel extends JPanel {
     }
 
     private List<MyLayout.AlumnoVisual> cargarListaCarreras() {
-        return carreraController.obtenerTodas().stream()
-                .map(c -> new MyLayout.AlumnoVisual(c.getNombre(), c.getCodigo())) // usa AlumnoVisual aunque es para mostrar nombre/codigo
+        List<Carrera> carreras = Facultad.getInstance().buscarCarreras(textoBusqueda);
+
+        // Aplicar ordenamiento
+        if (ordenAZ) {
+            carreras.sort((c1, c2) -> c1.getNombre().compareToIgnoreCase(c2.getNombre()));
+        } else {
+            carreras.sort((c1, c2) -> c2.getNombre().compareToIgnoreCase(c1.getNombre()));
+        }
+
+        return carreras.stream()
+                .map(c -> new MyLayout.AlumnoVisual(c.getNombre(), c.getCodigo()))
                 .collect(Collectors.toList());
     }
 }

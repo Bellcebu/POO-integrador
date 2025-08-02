@@ -4,7 +4,7 @@ import java.awt.Color;
 
 public class ThemeConfig {
 
-    public static boolean modoOscuro = false;
+    public static boolean modoOscuro = true;
 
     public static Color COLOR_CREAR;
     public static Color COLOR_EDITAR;

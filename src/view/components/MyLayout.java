@@ -9,12 +9,16 @@ import java.util.List;
 
 public class MyLayout {
 
-    public static JPanel crearSeccion(String titulo, List<AlumnoVisual> elementos, ActionListener onCrear, ActionListener onEditar, ActionListener onEliminar, ActionListener onGestionar, ActionListener onOrdenar, String textoOrdenar) {
+    public static JPanel crearSeccion(String titulo, List<AlumnoVisual> elementos,
+                                      ActionListener onCrear, ActionListener onEditar,
+                                      ActionListener onEliminar, ActionListener onGestionar,
+                                      ActionListener onOrdenar, String textoOrdenar,
+                                      ActionListener onBuscar, String placeholderBusqueda) {
         JPanel seccionPanel = new JPanel(new BorderLayout());
         seccionPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         seccionPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
-        JPanel headerPanel = crearHeader(titulo, onCrear, onOrdenar, textoOrdenar);
+        JPanel headerPanel = crearHeader(titulo, onCrear, onOrdenar, textoOrdenar, onBuscar, placeholderBusqueda);
         JPanel listaPanel = crearLista(elementos, onEditar, onEliminar, onGestionar);
 
         MyScroll scroll = MyScroll.crearVertical(listaPanel);
@@ -24,29 +28,63 @@ public class MyLayout {
         return seccionPanel;
     }
 
-    private static JPanel crearHeader(String titulo, ActionListener onCrear, ActionListener onOrdenar, String textoOrdenar) {
+    public static JPanel crearSeccion(String titulo, List<AlumnoVisual> elementos,
+                                      ActionListener onCrear, ActionListener onEditar,
+                                      ActionListener onEliminar, ActionListener onGestionar,
+                                      ActionListener onOrdenar, String textoOrdenar) {
+        return crearSeccion(titulo, elementos, onCrear, onEditar, onEliminar, onGestionar,
+                onOrdenar, textoOrdenar, null, null);
+    }
+
+    private static JPanel crearHeader(String titulo, ActionListener onCrear,
+                                      ActionListener onOrdenar, String textoOrdenar,
+                                      ActionListener onBuscar, String placeholderBusqueda) {
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         headerPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
+        JPanel panelIzquierdo = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 8));
+        panelIzquierdo.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         MyLabel tituloLabel = MyLabel.titulo(titulo);
+        panelIzquierdo.add(tituloLabel);
 
-        // Panel derecho con botones
-        JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        panelBotones.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        JPanel panelCentro = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
+        panelCentro.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
-        // Botón ordenar (siempre presente pero sin acción por defecto)
+        if (onBuscar != null && placeholderBusqueda != null) {
+            MyLabel buscarLabel = MyLabel.texto("Buscar:");
+            panelCentro.add(buscarLabel);
+
+            MyTextField txtBuscar = MyTextField.buscar(placeholderBusqueda);
+            txtBuscar.setName("campoBusqueda");
+            panelCentro.add(txtBuscar);
+
+            MyButton btnBuscar = MyButton.info("Buscar", e -> {
+                String textoBusqueda = txtBuscar.getText();
+                ActionEvent evento = new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, textoBusqueda);
+                onBuscar.actionPerformed(evento);
+            });
+            panelCentro.add(btnBuscar);
+        }
+
+        JPanel panelDerecho = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        panelDerecho.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+
         MyButton btnOrdenar = MyButton.ordenar(textoOrdenar, onOrdenar);
-        panelBotones.add(btnOrdenar);
+        panelDerecho.add(btnOrdenar);
 
-        // Botón crear
         MyButton btnCrear = MyButton.crear("Crear " + titulo.substring(0, titulo.length() - 1), onCrear);
-        panelBotones.add(btnCrear);
+        panelDerecho.add(btnCrear);
 
-        headerPanel.add(tituloLabel, BorderLayout.WEST);
-        headerPanel.add(panelBotones, BorderLayout.EAST);
+        headerPanel.add(panelIzquierdo, BorderLayout.WEST);
+        headerPanel.add(panelCentro, BorderLayout.CENTER);
+        headerPanel.add(panelDerecho, BorderLayout.EAST);
 
         return headerPanel;
+    }
+
+    private static JPanel crearHeader(String titulo, ActionListener onCrear, ActionListener onOrdenar, String textoOrdenar) {
+        return crearHeader(titulo, onCrear, onOrdenar, textoOrdenar, null, null);
     }
 
     private static JPanel crearLista(List<AlumnoVisual> elementos, ActionListener onEditar, ActionListener onEliminar, ActionListener onGestionar) {
