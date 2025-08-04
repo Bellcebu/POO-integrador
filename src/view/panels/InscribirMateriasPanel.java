@@ -79,7 +79,7 @@ public class InscribirMateriasPanel extends JPanel {
 
         // Botones
         btnCargar = MyButton.boton5("Cargar Materias", e -> cargarMaterias());
-        btnInscribir = MyButton.boton6("Inscribir Seleccionadas", onInscribir);
+        btnInscribir = MyButton.boton6("Inscribir", onInscribir);
         btnCancelar = MyButton.boton7("Cancelar", onCancelar);
     }
 

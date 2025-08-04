@@ -56,11 +56,10 @@ public class MateriasPanel extends JPanel {
                     String nombre = formularioMateria.getNombre();
                     int cuatrimestre = formularioMateria.getCuatrimestre();
                     boolean esObligatoria = formularioMateria.esObligatoria();
-                    String codigoCarrera = formularioMateria.getCodigoCarrera();
 
-                    // Validaciones
-                    if (codigo.isEmpty() || nombre.isEmpty() || codigoCarrera.isEmpty()) {
-                        JOptionPane.showMessageDialog(this, "Código, Nombre y Carrera son obligatorios",
+                    // Validaciones SIMPLIFICADAS - Sin carrera
+                    if (codigo.isEmpty() || nombre.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Código y Nombre son obligatorios",
                                 "Error", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
@@ -71,14 +70,14 @@ public class MateriasPanel extends JPanel {
                         return;
                     }
 
-                    // Intentar crear la materia
-                    boolean exito = materiaController.agregarAccion(codigo, nombre, cuatrimestre, esObligatoria, codigoCarrera);
+                    // Intentar crear la materia SIN pasar carrera
+                    boolean exito = materiaController.agregarAccion(codigo, nombre, cuatrimestre, esObligatoria);
                     if (exito) {
-                        JOptionPane.showMessageDialog(this, "Materia creada exitosamente",
+                        JOptionPane.showMessageDialog(this, "Materia creada exitosamente.\nPuedes asignarla a carreras desde el panel de cada carrera.",
                                 "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         volverAListaPrincipal();
                     } else {
-                        JOptionPane.showMessageDialog(this, "Error: El código de materia ya existe o la carrera no es válida",
+                        JOptionPane.showMessageDialog(this, "Error: El código de materia ya existe",
                                 "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 },

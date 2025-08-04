@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
+import java.util.ArrayList;
 
 public class InfoMateriaPanel extends JPanel {
 
@@ -61,9 +62,10 @@ public class InfoMateriaPanel extends JPanel {
 
         mainPanel.add(Box.createVerticalStrut(15));
 
-        // Carrera
-        JPanel carreraPanel = crearSeccionInfo("Carrera", crearInfoCarrera());
-        mainPanel.add(carreraPanel);
+        // Carreras que incluyen esta materia
+        List<Carrera> carrerasQueIncluyen = obtenerCarrerasQueIncluyenMateria();
+        JPanel carrerasPanel = crearSeccionInfo("Carreras que incluyen esta materia (" + carrerasQueIncluyen.size() + ")", crearInfoCarreras(carrerasQueIncluyen));
+        mainPanel.add(carrerasPanel);
 
         mainPanel.add(Box.createVerticalStrut(15));
 
@@ -105,14 +107,13 @@ public class InfoMateriaPanel extends JPanel {
     }
 
     private JPanel crearInfoBasica() {
-        JPanel panel = new JPanel(new GridLayout(5, 1, 5, 5));
+        JPanel panel = new JPanel(new GridLayout(4, 1, 5, 5));
         panel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
         panel.add(MyLabel.texto("Código: " + materia.getCodigo()));
         panel.add(MyLabel.texto("Nombre: " + materia.getNombre()));
         panel.add(MyLabel.texto("Cuatrimestre: " + materia.getCuatrimestre()));
         panel.add(MyLabel.texto("Tipo: " + (materia.esObligatoria() ? "Obligatoria" : "Optativa")));
-        panel.add(MyLabel.texto("Código de carrera: " + materia.getCodigoCarrera()));
 
         return panel;
     }
@@ -136,23 +137,33 @@ public class InfoMateriaPanel extends JPanel {
         return panel;
     }
 
-    private JPanel crearInfoCarrera() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+    // NUEVO MÉTODO: Buscar qué carreras incluyen esta materia
+    private List<Carrera> obtenerCarrerasQueIncluyenMateria() {
+        List<Carrera> carrerasQueIncluyen = new ArrayList<>();
 
-        // Buscar la carrera completa
-        Carrera carrera = null;
-        for (Carrera c : Facultad.getInstance().getCarreras()) {
-            if (c.getCodigo().equals(materia.getCodigoCarrera())) {
-                carrera = c;
-                break;
+        for (Carrera carrera : Facultad.getInstance().getCarreras()) {
+            if (carrera.getMaterias().contains(materia)) {
+                carrerasQueIncluyen.add(carrera);
             }
         }
 
-        if (carrera != null) {
-            panel.add(MyLabel.texto(carrera.getNombre() + " (" + carrera.getCodigo() + ")"));
+        return carrerasQueIncluyen;
+    }
+
+    private JPanel crearInfoCarreras(List<Carrera> carreras) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+
+        if (carreras.isEmpty()) {
+            panel.add(MyLabel.info("Esta materia no está asignada a ninguna carrera"));
         } else {
-            panel.add(MyLabel.texto("Carrera: " + materia.getCodigoCarrera() + " (no encontrada)"));
+            for (Carrera carrera : carreras) {
+                JPanel carreraPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                carreraPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+                carreraPanel.add(MyLabel.texto("• " + carrera.getNombre() + " (" + carrera.getCodigo() + ")"));
+                panel.add(carreraPanel);
+            }
         }
 
         return panel;

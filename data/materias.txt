@@ -1,2 +1,2 @@
-MAT01☆Mate1☆1☆true☆LIC01☆MAT2
-MAT2☆Mate2☆4☆true☆LIC01☆
+MAT01☆Mate1☆1☆true☆
+MAT02☆Mate2☆2☆true☆MAT01

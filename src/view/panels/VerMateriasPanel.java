@@ -65,7 +65,7 @@ public class VerMateriasPanel extends JPanel {
             mainPanel.add(resumenPanel);
             mainPanel.add(Box.createVerticalStrut(20));
 
-            // Encabezado de la tabla
+            // Encabezado de la tabla (SIN columna carrera)
             JPanel headerTablePanel = crearHeaderTabla();
             mainPanel.add(headerTablePanel);
             mainPanel.add(Box.createVerticalStrut(10));
@@ -142,23 +142,24 @@ public class VerMateriasPanel extends JPanel {
         return panel;
     }
 
+    // ACTUALIZADO: Sin columna carrera
     private JPanel crearHeaderTabla() {
-        JPanel panel = new JPanel(new GridLayout(1, 6, 10, 5));
+        JPanel panel = new JPanel(new GridLayout(1, 5, 10, 5));
         panel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         panel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
         panel.add(MyLabel.subtitulo("Materia"));
         panel.add(MyLabel.subtitulo("Código"));
         panel.add(MyLabel.subtitulo("Cuatrimestre"));
-        panel.add(MyLabel.subtitulo("Carrera"));
         panel.add(MyLabel.subtitulo("Estado"));
         panel.add(MyLabel.subtitulo("Tipo"));
 
         return panel;
     }
 
+    // ACTUALIZADO: Sin columna carrera
     private JPanel crearFilaMateria(InscripcionMateria inscripcion) {
-        JPanel panel = new JPanel(new GridLayout(1, 6, 10, 5));
+        JPanel panel = new JPanel(new GridLayout(1, 5, 10, 5));
         panel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         panel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(ThemeConfig.COLOR_BORDE_LINEA_SUAVE),
@@ -167,11 +168,10 @@ public class VerMateriasPanel extends JPanel {
 
         Materia materia = inscripcion.getMateria();
 
-        // Datos de la materia
+        // Datos de la materia (SIN carrera)
         panel.add(MyLabel.texto(materia.getNombre()));
         panel.add(MyLabel.texto(materia.getCodigo()));
         panel.add(MyLabel.texto(String.valueOf(materia.getCuatrimestre())));
-        panel.add(MyLabel.texto(materia.getCodigoCarrera()));
 
         // Estado
         String estado;

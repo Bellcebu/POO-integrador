@@ -24,6 +24,10 @@ public class MyLayout {
 
         MyScroll scroll = MyScroll.crearVertical(listaPanel);
 
+        // FORZAR TAMAÑO MÍNIMO Y PREFERIDO DEL SCROLL
+        scroll.setPreferredSize(new Dimension(900, 400));
+        scroll.setMinimumSize(new Dimension(900, 400));
+
         seccionPanel.add(headerPanel, BorderLayout.NORTH);
         seccionPanel.add(scroll, BorderLayout.CENTER);
         return seccionPanel;
@@ -98,11 +102,22 @@ public class MyLayout {
         listaPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         listaPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 10));
 
+        // ESTABLECER TAMAÑO MÍNIMO PARA EL PANEL DE LISTA
+        listaPanel.setPreferredSize(new Dimension(880, 400));
+        listaPanel.setMinimumSize(new Dimension(880, 350));
+
         if (elementos == null || elementos.isEmpty()) {
+            // Agregar espacio vertical para mantener el tamaño mínimo
+            listaPanel.add(Box.createVerticalStrut(100));
+
             MyLabel emptyLabel = MyLabel.centrado("No hay elementos registrados");
             emptyLabel.setFont(new Font("Arial", Font.ITALIC, 14));
             emptyLabel.setBorder(BorderFactory.createEmptyBorder(50, 0, 50, 0));
             listaPanel.add(emptyLabel);
+
+            // Agregar más espacio para mantener tamaño
+            listaPanel.add(Box.createVerticalGlue());
+
             return listaPanel;
         }
 
@@ -112,6 +127,9 @@ public class MyLayout {
             listaPanel.add(itemPanel);
             listaPanel.add(Box.createVerticalStrut(8));
         }
+
+        // Agregar espacio flexible al final para mantener el tamaño mínimo
+        listaPanel.add(Box.createVerticalGlue());
 
         return listaPanel;
     }
@@ -126,6 +144,11 @@ public class MyLayout {
                 BorderFactory.createLineBorder(ThemeConfig.COLOR_BORDE_LINEA_SUAVE),
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)
         ));
+
+        // ESTABLECER TAMAÑO FIJO PARA CADA ITEM
+        itemPanel.setPreferredSize(new Dimension(860, 65));
+        itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 65));
+        itemPanel.setMinimumSize(new Dimension(860, 65));
 
         JPanel infoPanel = new JPanel(new GridLayout(2, 1));
         infoPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);

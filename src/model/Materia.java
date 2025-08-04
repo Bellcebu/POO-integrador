@@ -9,16 +9,13 @@ public class Materia {
     private String nombre;
     private int cuatrimestre;
     private boolean esObligatoria;
-    private String codigoCarrera; // NUEVO: referencia a la carrera
     private Set<Materia> correlativas;
 
-    public Materia(String codigo, String nombre, int cuatrimestre,
-                   boolean esObligatoria, String codigoCarrera) {
+    public Materia(String codigo, String nombre, int cuatrimestre, boolean esObligatoria) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.cuatrimestre = cuatrimestre;
         this.esObligatoria = esObligatoria;
-        this.codigoCarrera = codigoCarrera; // NUEVO
         this.correlativas = new HashSet<>();
     }
 
@@ -35,9 +32,6 @@ public class Materia {
     public boolean esObligatoria() {
         return esObligatoria;
     }
-    public String getCodigoCarrera() { // NUEVO
-        return codigoCarrera;
-    }
     public Set<Materia> getCorrelativas() {
         return correlativas;
     }
@@ -45,8 +39,8 @@ public class Materia {
     public static String[] getCodigosCorrelativas(String linea) {
         try {
             String[] partes = linea.split(SEPARADOR);
-            if (partes.length >= 6 && !partes[5].trim().isEmpty()) {
-                return partes[5].trim().split(",");
+            if (partes.length >= 5 && !partes[4].trim().isEmpty()) {
+                return partes[4].trim().split(",");
             }
         } catch (Exception e) {
             System.out.println("Error al obtener correlativas: " + linea);
@@ -58,7 +52,7 @@ public class Materia {
         correlativas.add(m);
     }
 
-    //toString y fromString MODIFICADOS
+    //toString y fromString MODIFICADOS - SIN codigoCarrera
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -66,7 +60,6 @@ public class Materia {
         sb.append(nombre).append(SEPARADOR);
         sb.append(cuatrimestre).append(SEPARADOR);
         sb.append(esObligatoria).append(SEPARADOR);
-        sb.append(codigoCarrera).append(SEPARADOR); // NUEVO
 
         if (!correlativas.isEmpty()) {
             boolean primera = true;
@@ -93,14 +86,13 @@ public class Materia {
     public static Materia fromString(String linea) {
         try {
             String[] partes = linea.split(SEPARADOR);
-            if (partes.length >= 5) {
+            if (partes.length >= 4) {
                 String codigo = partes[0].trim();
                 String nombre = partes[1].trim();
                 int cuatrimestre = Integer.parseInt(partes[2].trim());
                 boolean esObligatoria = Boolean.parseBoolean(partes[3].trim());
-                String codigoCarrera = partes[4].trim(); // NUEVO
 
-                return new Materia(codigo, nombre, cuatrimestre, esObligatoria, codigoCarrera);
+                return new Materia(codigo, nombre, cuatrimestre, esObligatoria);
             }
         } catch (Exception e) {
             System.out.println("Error al parsear materia: " + linea);
@@ -116,7 +108,6 @@ public class Materia {
     public String mostrarInfoCompleta() {
         StringBuilder sb = new StringBuilder();
         sb.append(mostrarInfo());
-        sb.append(" - Carrera: ").append(codigoCarrera); // NUEVO
         sb.append(" - Cuatrimestre: ").append(cuatrimestre);
         sb.append(" - ").append(esObligatoria ? "Obligatoria" : "Optativa");
 

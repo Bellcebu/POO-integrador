@@ -91,11 +91,14 @@ public class Alumno {
         return false;
     }
 
+    // CORREGIDO: Ahora considera promoción también
     public boolean aproboFinal(Materia materia) {
         // Buscar por código, no por referencia
         for (Map.Entry<Materia, InscripcionMateria> entry : inscripciones.entrySet()) {
             if (entry.getKey().getCodigo().equals(materia.getCodigo())) {
-                return entry.getValue().aproboFinal();
+                InscripcionMateria insc = entry.getValue();
+                // Si promocionó O aprobó final, cuenta como "final aprobado"
+                return insc.aproboFinal() || insc.promociono();
             }
         }
         return false;

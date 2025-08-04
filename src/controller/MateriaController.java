@@ -30,8 +30,8 @@ public class MateriaController {
         return resultados;
     }
 
-    public boolean agregarAccion(String codigo, String nombre, int cuatrimestre,
-                                 boolean esObligatoria, String codigoCarrera) {
+    // MÉTODO ACTUALIZADO - Sin codigoCarrera
+    public boolean agregarAccion(String codigo, String nombre, int cuatrimestre, boolean esObligatoria) {
         // Validar que no exista el código
         for (Materia m : Facultad.getInstance().getMaterias()) {
             if (m.getCodigo().equals(codigo)) {
@@ -39,21 +39,8 @@ public class MateriaController {
             }
         }
 
-        // Validar que la carrera exista
-        boolean carreraExiste = false;
-        for (Carrera c : Facultad.getInstance().getCarreras()) {
-            if (c.getCodigo().equals(codigoCarrera)) {
-                carreraExiste = true;
-                break;
-            }
-        }
-
-        if (!carreraExiste) {
-            return false; // Carrera no existe
-        }
-
-        // Crear la materia
-        Materia nuevaMateria = new Materia(codigo, nombre, cuatrimestre, esObligatoria, codigoCarrera);
+        // Crear la materia SIN asignar carrera
+        Materia nuevaMateria = new Materia(codigo, nombre, cuatrimestre, esObligatoria);
 
         // Agregar a memoria
         Facultad.getInstance().getMaterias().add(nuevaMateria);

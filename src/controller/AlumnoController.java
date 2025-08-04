@@ -57,8 +57,6 @@ public class AlumnoController {
         return alumnosOrdenados;
     }
 
-    // AGREGAR en AlumnoController.java:
-
     public List<Carrera> obtenerCarrerasDelAlumno(String legajo) {
         List<Carrera> carrerasAlumno = new ArrayList<>();
 
@@ -74,14 +72,18 @@ public class AlumnoController {
         return carrerasAlumno;
     }
 
+    // MÉTODO CON DEBUG MEJORADO
     public List<Materia> obtenerMateriasDisponibles(String legajoAlumno, String codigoCarrera) {
         List<Materia> materiasDisponibles = new ArrayList<>();
 
         // Buscar alumno
         Alumno alumno = Alumno.buscarPorLegajo(legajoAlumno, Facultad.getInstance().getAlumnos());
         if (alumno == null) {
+            System.out.println("DEBUG: Alumno no encontrado con legajo: " + legajoAlumno);
             return materiasDisponibles;
         }
+
+        System.out.println("DEBUG: Alumno encontrado: " + alumno.getNombre());
 
         // Buscar carrera
         Carrera carrera = null;
@@ -93,20 +95,38 @@ public class AlumnoController {
         }
 
         if (carrera == null) {
+            System.out.println("DEBUG: Carrera no encontrada con código: " + codigoCarrera);
             return materiasDisponibles;
+        }
+
+        System.out.println("DEBUG: Carrera encontrada: " + carrera.getNombre());
+        System.out.println("DEBUG: Materias en la carrera: " + carrera.getMaterias().size());
+
+        for (Materia m : carrera.getMaterias()) {
+            System.out.println("  - " + m.getCodigo() + ": " + m.getNombre());
         }
 
         // Filtrar materias que puede cursar
         for (Materia materia : carrera.getMaterias()) {
+            System.out.println("DEBUG: Verificando materia: " + materia.getCodigo());
+
             // No está ya inscripto
-            if (!alumno.estaInscriptoEn(materia)) {
+            boolean yaInscripto = alumno.estaInscriptoEn(materia);
+            System.out.println("  - Ya inscripto: " + yaInscripto);
+
+            if (!yaInscripto) {
                 // Verificar si puede cursar según el plan
-                if (carrera.puedeInscribirseA(materia, alumno)) {
+                boolean puedeInscribirse = carrera.puedeInscribirseA(materia, alumno);
+                System.out.println("  - Puede inscribirse según plan: " + puedeInscribirse);
+
+                if (puedeInscribirse) {
                     materiasDisponibles.add(materia);
+                    System.out.println("  - ¡AGREGADA A DISPONIBLES!");
                 }
             }
         }
 
+        System.out.println("DEBUG: Total materias disponibles: " + materiasDisponibles.size());
         return materiasDisponibles;
     }
 
