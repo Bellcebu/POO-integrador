@@ -13,13 +13,14 @@ public class MyLayout {
                                       ActionListener onCrear, ActionListener onEditar,
                                       ActionListener onEliminar, ActionListener onGestionar,
                                       ActionListener onOrdenar, String textoOrdenar,
-                                      ActionListener onBuscar, String placeholderBusqueda) {
+                                      ActionListener onBuscar, String placeholderBusqueda,
+                                      String textoBoton2, String textoBoton3, String textoBoton4) {
         JPanel seccionPanel = new JPanel(new BorderLayout());
         seccionPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         seccionPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         JPanel headerPanel = crearHeader(titulo, onCrear, onOrdenar, textoOrdenar, onBuscar, placeholderBusqueda);
-        JPanel listaPanel = crearLista(elementos, onEditar, onEliminar, onGestionar);
+        JPanel listaPanel = crearLista(elementos, onEditar, onEliminar, onGestionar, textoBoton2, textoBoton3, textoBoton4);
 
         MyScroll scroll = MyScroll.crearVertical(listaPanel);
 
@@ -31,9 +32,11 @@ public class MyLayout {
     public static JPanel crearSeccion(String titulo, List<AlumnoVisual> elementos,
                                       ActionListener onCrear, ActionListener onEditar,
                                       ActionListener onEliminar, ActionListener onGestionar,
-                                      ActionListener onOrdenar, String textoOrdenar) {
+                                      ActionListener onOrdenar, String textoOrdenar,
+                                      ActionListener onBuscar, String placeholderBusqueda) {
         return crearSeccion(titulo, elementos, onCrear, onEditar, onEliminar, onGestionar,
-                onOrdenar, textoOrdenar, null, null);
+                onOrdenar, textoOrdenar, onBuscar, placeholderBusqueda,
+                "Editar", "Eliminar", "Gestionar");
     }
 
     private static JPanel crearHeader(String titulo, ActionListener onCrear,
@@ -87,7 +90,9 @@ public class MyLayout {
         return crearHeader(titulo, onCrear, onOrdenar, textoOrdenar, null, null);
     }
 
-    private static JPanel crearLista(List<AlumnoVisual> elementos, ActionListener onEditar, ActionListener onEliminar, ActionListener onGestionar) {
+    private static JPanel crearLista(List<AlumnoVisual> elementos, ActionListener onEditar,
+                                     ActionListener onEliminar, ActionListener onGestionar,
+                                     String textoBoton2, String textoBoton3, String textoBoton4) {
         JPanel listaPanel = new JPanel();
         listaPanel.setLayout(new BoxLayout(listaPanel, BoxLayout.Y_AXIS));
         listaPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
@@ -102,7 +107,8 @@ public class MyLayout {
         }
 
         for (AlumnoVisual alumno : elementos) {
-            JPanel itemPanel = crearItemLista(alumno, onEditar, onEliminar, onGestionar);
+            JPanel itemPanel = crearItemLista(alumno, onEditar, onEliminar, onGestionar,
+                    textoBoton2, textoBoton3, textoBoton4);
             listaPanel.add(itemPanel);
             listaPanel.add(Box.createVerticalStrut(8));
         }
@@ -110,7 +116,10 @@ public class MyLayout {
         return listaPanel;
     }
 
-    private static JPanel crearItemLista(AlumnoVisual alumno, ActionListener onEditar, ActionListener onEliminar, ActionListener onGestionar) {
+
+    private static JPanel crearItemLista(AlumnoVisual alumno, ActionListener onEditar,
+                                         ActionListener onEliminar, ActionListener onGestionar,
+                                         String textoBoton2, String textoBoton3, String textoBoton4) {
         JPanel itemPanel = new JPanel(new BorderLayout());
         itemPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         itemPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -130,11 +139,11 @@ public class MyLayout {
         JPanel botonesPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         botonesPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
-        MyButton btnEditar = MyButton.boton2("Editar", e -> {
+        MyButton btnEditar = MyButton.boton2(textoBoton2, e -> {
             onEditar.actionPerformed(new java.awt.event.ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, alumno.legajo()));
         });
 
-        MyButton btnEliminar = MyButton.boton3("Eliminar", e -> {
+        MyButton btnEliminar = MyButton.boton3(textoBoton3, e -> {
             onEliminar.actionPerformed(new java.awt.event.ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, alumno.legajo()));
         });
 
@@ -142,7 +151,7 @@ public class MyLayout {
         botonesPanel.add(btnEliminar);
 
         if (onGestionar != null) {
-            MyButton btnGestionar = MyButton.boton4("Gestionar", e -> {
+            MyButton btnGestionar = MyButton.boton4(textoBoton4, e -> {
                 onGestionar.actionPerformed(new java.awt.event.ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, alumno.legajo()));
             });
             botonesPanel.add(btnGestionar);

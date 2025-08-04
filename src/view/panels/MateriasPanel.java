@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 public class MateriasPanel extends JPanel {
 
     private MateriaController materiaController;
+    private MateriaFormPanel formularioMateria;
+    private AgregarCorrelativasPanel agregarCorrelativasPanel;
+    private CalificarPanel calificarPanel;
+    private InfoMateriaPanel infoMateriaPanel;
     private boolean ordenAZ = false;
     private String textoBusqueda = "";
 
@@ -26,20 +30,109 @@ public class MateriasPanel extends JPanel {
         JPanel seccionMaterias = MyLayout.crearSeccion(
                 "Materias",
                 cargarListaMaterias(),
-                e -> {}, // Crear (sin implementar aún)
-                e -> {}, // Editar (sin implementar aún)
-                e -> {}, // Eliminar (sin implementar aún)
-                e -> {}, // Gestionar (sin implementar aún)
+                e -> crearMateria(), // CREAR
+                e -> agregarCorrelativas(e.getActionCommand()), // AGREGAR CORRELATIVAS
+                e -> calificar(e.getActionCommand()), // CALIFICAR
+                e -> mostrarInfo(e.getActionCommand()), // INFO
                 e -> { ordenAZ = !ordenAZ; actualizarLista(); },
                 ordenAZ ? "A→Z" : "Z→A",
-                e -> { // NUEVO: ActionListener para búsqueda
+                e -> {
                     textoBusqueda = e.getActionCommand();
                     actualizarLista();
                 },
-                "Buscar por nombre o código" // NUEVO: Placeholder
+                "Buscar por nombre o código",
+                "Agregar Correlativas",  // Texto botón 2
+                "Calificar",            // Texto botón 3
+                "Info"                  // Texto botón 4
         );
 
         add(seccionMaterias, BorderLayout.CENTER);
+    }
+
+    private void crearMateria() {
+        formularioMateria = new MateriaFormPanel(
+                e -> {
+                    String codigo = formularioMateria.getCodigo();
+                    String nombre = formularioMateria.getNombre();
+                    int cuatrimestre = formularioMateria.getCuatrimestre();
+                    boolean esObligatoria = formularioMateria.esObligatoria();
+                    String codigoCarrera = formularioMateria.getCodigoCarrera();
+
+                    // Validaciones
+                    if (codigo.isEmpty() || nombre.isEmpty() || codigoCarrera.isEmpty()) {
+                        JOptionPane.showMessageDialog(this, "Código, Nombre y Carrera son obligatorios",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    if (cuatrimestre <= 0) {
+                        JOptionPane.showMessageDialog(this, "Cuatrimestre debe ser un número válido mayor a 0",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // Intentar crear la materia
+                    boolean exito = materiaController.agregarAccion(codigo, nombre, cuatrimestre, esObligatoria, codigoCarrera);
+                    if (exito) {
+                        JOptionPane.showMessageDialog(this, "Materia creada exitosamente",
+                                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        volverAListaPrincipal();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Error: El código de materia ya existe o la carrera no es válida",
+                                "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                },
+                e -> volverAListaPrincipal()
+        );
+        mostrarFormulario();
+    }
+
+    private void agregarCorrelativas(String codigoMateria) {
+        Materia materia = materiaController.buscarMateriaPorCodigo(codigoMateria);
+        if (materia != null) {
+            agregarCorrelativasPanel = new AgregarCorrelativasPanel(materia,
+                    e -> {
+                        if (!agregarCorrelativasPanel.haySeleccion()) {
+                            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos una materia",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        List<String> correlativasSeleccionadas = agregarCorrelativasPanel.getCorrelativasSeleccionadas();
+                        boolean exito = materiaController.agregarCorrelativasAMateria(codigoMateria, correlativasSeleccionadas);
+
+                        if (exito) {
+                            JOptionPane.showMessageDialog(this, "Correlativas agregadas exitosamente",
+                                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                            volverAListaPrincipal();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Error al agregar correlativas",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    },
+                    e -> volverAListaPrincipal()
+            );
+            mostrarFormularioAgregarCorrelativas();
+        }
+    }
+
+    private void calificar(String codigoMateria) {
+        Materia materia = materiaController.buscarMateriaPorCodigo(codigoMateria);
+        if (materia != null) {
+            calificarPanel = new CalificarPanel(materia, materiaController,
+                    e -> volverAListaPrincipal(),
+                    e -> volverAListaPrincipal()
+            );
+            mostrarPanelCalificar();
+        }
+    }
+
+    private void mostrarInfo(String codigoMateria) {
+        Materia materia = materiaController.buscarMateriaPorCodigo(codigoMateria);
+        if (materia != null) {
+            infoMateriaPanel = new InfoMateriaPanel(materia, materiaController, e -> volverAListaPrincipal());
+            mostrarPanelInfo();
+        }
     }
 
     private void actualizarLista() {
@@ -52,6 +145,7 @@ public class MateriasPanel extends JPanel {
     private List<MyLayout.AlumnoVisual> cargarListaMaterias() {
         List<Materia> materias = materiaController.buscarMaterias(textoBusqueda);
 
+        // Aplicar ordenamiento
         if (ordenAZ) {
             materias.sort((m1, m2) -> m1.getNombre().compareToIgnoreCase(m2.getNombre()));
         } else {
@@ -61,5 +155,40 @@ public class MateriasPanel extends JPanel {
         return materias.stream()
                 .map(m -> new MyLayout.AlumnoVisual(m.getNombre(), m.getCodigo()))
                 .collect(Collectors.toList());
+    }
+
+    private void mostrarFormulario() {
+        removeAll();
+        add(formularioMateria, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    private void mostrarFormularioAgregarCorrelativas() {
+        removeAll();
+        add(agregarCorrelativasPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    private void mostrarPanelCalificar() {
+        removeAll();
+        add(calificarPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    private void mostrarPanelInfo() {
+        removeAll();
+        add(infoMateriaPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    private void volverAListaPrincipal() {
+        removeAll();
+        configurarPanel();
+        revalidate();
+        repaint();
     }
 }

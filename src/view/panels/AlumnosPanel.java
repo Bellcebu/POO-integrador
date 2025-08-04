@@ -16,8 +16,11 @@ public class AlumnosPanel extends JPanel {
 
     private AlumnoController alumnoController;
     private AlumnoFormPanel formularioAlumno;
+    private InscribirMateriasPanel inscribirMateriasPanel;
+    private VerMateriasPanel verMateriasPanel;
+    private InfoAlumnoPanel infoAlumnoPanel;
     private boolean ordenAZ = false;
-    private String textoBusqueda = ""; // Mantener el estado de búsqueda
+    private String textoBusqueda = "";
 
     public AlumnosPanel() {
         this.alumnoController = new AlumnoController();
@@ -30,17 +33,20 @@ public class AlumnosPanel extends JPanel {
         JPanel seccionAlumnos = MyLayout.crearSeccion(
                 "Alumnos",
                 obtenerAlumnosFiltrados(),
-                e -> crearAlumno(), //actionlister usar
-                e -> {},
-                e -> {},
-                e -> {}, // Sin gestionar por ahora
+                e -> crearAlumno(),
+                e -> inscribirAMaterias(e.getActionCommand()), // INSCRIBIR A MATERIAS
+                e -> verMaterias(e.getActionCommand()), // VER MATERIAS
+                e -> mostrarInfo(e.getActionCommand()), // INFO
                 e -> { ordenAZ = !ordenAZ; actualizarLista(); },
                 ordenAZ ? "A→Z" : "Z→A",
-                e -> { // NUEVO: ActionListener para búsqueda
-                    textoBusqueda = e.getActionCommand(); // El texto viene en getActionCommand()
+                e -> {
+                    textoBusqueda = e.getActionCommand();
                     actualizarLista();
                 },
-                "Buscar por nombre o legajo" // NUEVO: Placeholder
+                "Buscar por nombre o legajo",
+                "Inscribir a Materias",  // Texto botón 2
+                "Ver Materias",          // Texto botón 3
+                "Info"                   // Texto botón 4
         );
 
         add(seccionAlumnos, BorderLayout.CENTER);
@@ -67,7 +73,6 @@ public class AlumnosPanel extends JPanel {
         repaint();
     }
 
-    //mudar
     private void crearAlumno() {
         formularioAlumno = new AlumnoFormPanel(
                 e -> {
@@ -93,9 +98,75 @@ public class AlumnosPanel extends JPanel {
         mostrarFormulario();
     }
 
+    private void inscribirAMaterias(String legajo) {
+        Alumno alumno = alumnoController.buscarPorLegajo(legajo);
+        if (alumno != null) {
+            inscribirMateriasPanel = new InscribirMateriasPanel(alumno, alumnoController,
+                    e -> {
+                        if (!inscribirMateriasPanel.haySeleccion()) {
+                            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos una materia",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        List<String> materiasSeleccionadas = inscribirMateriasPanel.getMateriasSeleccionadas();
+                        boolean exito = alumnoController.inscribirAlumnoAMaterias(legajo, materiasSeleccionadas);
+
+                        if (exito) {
+                            JOptionPane.showMessageDialog(this, "Materias inscriptas exitosamente",
+                                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                            volverAListaPrincipal();
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Error al inscribir materias",
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    },
+                    e -> volverAListaPrincipal()
+            );
+            mostrarFormularioInscribirMaterias();
+        }
+    }
+
+    private void verMaterias(String legajo) {
+        Alumno alumno = alumnoController.buscarPorLegajo(legajo);
+        if (alumno != null) {
+            verMateriasPanel = new VerMateriasPanel(alumno, alumnoController, e -> volverAListaPrincipal());
+            mostrarPanelVerMaterias();
+        }
+    }
+
+    private void mostrarInfo(String legajo) {
+        Alumno alumno = alumnoController.buscarPorLegajo(legajo);
+        if (alumno != null) {
+            infoAlumnoPanel = new InfoAlumnoPanel(alumno, alumnoController, e -> volverAListaPrincipal());
+            mostrarPanelInfo();
+        }
+    }
+
     private void mostrarFormulario() {
         removeAll();
         add(formularioAlumno, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    private void mostrarFormularioInscribirMaterias() {
+        removeAll();
+        add(inscribirMateriasPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    private void mostrarPanelVerMaterias() {
+        removeAll();
+        add(verMateriasPanel, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    private void mostrarPanelInfo() {
+        removeAll();
+        add(infoAlumnoPanel, BorderLayout.CENTER);
         revalidate();
         repaint();
     }

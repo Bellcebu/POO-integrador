@@ -75,7 +75,6 @@ public class MyButton extends JButton {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_CREAR);
         btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setToolTipText("Crear nuevo " + texto.toLowerCase().replace("crear ", ""));
         return btn;
     }
 
@@ -83,8 +82,7 @@ public class MyButton extends JButton {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_EDITAR);
         btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setToolTipText("Editar elemento seleccionado");
-        btn.setPreferredSize(new Dimension(80, 30));
+        btn.setPreferredSize(new Dimension(125, 30));
         return btn;
     }
 
@@ -92,8 +90,7 @@ public class MyButton extends JButton {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_ELIMINAR);
         btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setToolTipText("Eliminar elemento seleccionado");
-        btn.setPreferredSize(new Dimension(80, 30));
+        btn.setPreferredSize(new Dimension(125, 30));
         return btn;
     }
 
@@ -101,7 +98,6 @@ public class MyButton extends JButton {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_ACTUALIZAR);
         btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setToolTipText("Ver información del elemento");
         btn.setPreferredSize(new Dimension(100, 30));
         return btn;
     }
@@ -110,13 +106,36 @@ public class MyButton extends JButton {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_ACTUALIZAR);
         btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setToolTipText(texto);
+        btn.setPreferredSize(new Dimension(110, 35));
+        return btn;
+    }
+
+    public static MyButton boton6(String texto, ActionListener listener) {
+        MyButton btn = new MyButton(texto, listener);
+        btn.setBackground(ThemeConfig.COLOR_CREAR);
+        btn.setForeground(ThemeConfig.COLOR_TEXTO);
+        btn.setPreferredSize(new Dimension(110, 35));
+        return btn;
+    }
+
+    public static MyButton boton7(String texto, ActionListener listener) {
+        MyButton btn = new MyButton(texto, listener);
+        btn.setBackground(ThemeConfig.COLOR_ELIMINAR);
+        btn.setForeground(ThemeConfig.COLOR_TEXTO);
+        btn.setPreferredSize(new Dimension(110, 35));
+        return btn;
+    }
+
+    public static MyButton boton8(String texto, ActionListener listener) {
+        MyButton btn = new MyButton(texto, listener);
+        btn.setBackground(ThemeConfig.COLOR_ACTUALIZAR);
+        btn.setForeground(ThemeConfig.COLOR_TEXTO);
         btn.setPreferredSize(new Dimension(110, 35));
         return btn;
     }
 
     public static MyButton tema(String texto, ActionListener listener) {
-        MyButton btn = new MyButton("", listener); // texto vacío para que solo se vea el ícono
+        MyButton btn = new MyButton("", listener);
 
         ImageIcon icono;
         if (ThemeConfig.modoOscuro) {
@@ -131,40 +150,10 @@ public class MyButton extends JButton {
         btn.setIcon(new ImageIcon(imagen));
 
         btn.setForeground(Color.WHITE);
-        btn.setToolTipText("Cambiar tema (Claro/Oscuro)");
         btn.setPreferredSize(new Dimension(50, 50));
-
         btn.setHorizontalAlignment(SwingConstants.CENTER);
         btn.setVerticalAlignment(SwingConstants.CENTER);
 
         return btn;
     }
-
-    public static MyButton boton6(String texto, ActionListener listener) {
-        MyButton btn = new MyButton(texto, listener);
-        btn.setBackground(ThemeConfig.COLOR_CREAR);
-        btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setToolTipText("Guardar cambios");
-        btn.setPreferredSize(new Dimension(100, 35));
-        return btn;
-    }
-
-    public static MyButton boton7(String texto, ActionListener listener) {
-        MyButton btn = new MyButton(texto, listener);
-        btn.setBackground(ThemeConfig.COLOR_ELIMINAR);
-        btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setToolTipText("Cancelar operación");
-        btn.setPreferredSize(new Dimension(100, 35));
-        return btn;
-    }
-
-    public static MyButton boton8(String texto, ActionListener listener) {
-        MyButton btn = new MyButton(texto, listener);
-        btn.setBackground(ThemeConfig.COLOR_ACTUALIZAR);
-        btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setToolTipText("Ordenar lista");
-        btn.setPreferredSize(new Dimension(100, 35));
-        return btn;
-    }
-
 }

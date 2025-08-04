@@ -49,20 +49,4 @@ public class ArchivoAlumnos {
         guardarTodos(alumnos);
     }
 
-    public static void eliminar(String legajo) {
-        List<Alumno> alumnos = cargarTodos();
-        alumnos.removeIf(a -> a.getLegajo().equals(legajo));
-        guardarTodos(alumnos);
-    }
-
-    public static void editar(String legajoViejo, Alumno nuevoAlumno) {
-        List<Alumno> alumnos = cargarTodos();
-        for (int i = 0; i < alumnos.size(); i++) {
-            if (alumnos.get(i).getLegajo().equals(legajoViejo)) {
-                alumnos.set(i, nuevoAlumno);
-                break;
-            }
-        }
-        guardarTodos(alumnos);
-    }
 }
