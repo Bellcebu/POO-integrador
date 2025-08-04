@@ -11,11 +11,13 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class InscribirAlumnosPanel extends JPanel {
 
-    private JList<Alumno> listaAlumnos;
-    private DefaultListModel<Alumno> modeloLista;
+    private JPanel listaPanelAlumnos;
+    private Map<String, JCheckBox> checkboxesAlumnos; // Mapa legajo -> checkbox
     private MyButton btnInscribir;
     private MyButton btnCancelar;
     private Carrera carrera;
@@ -26,6 +28,7 @@ public class InscribirAlumnosPanel extends JPanel {
         this.carrera = carrera;
         this.onInscribir = onInscribir;
         this.onCancelar = onCancelar;
+        this.checkboxesAlumnos = new HashMap<>();
 
         configurarPanel();
         crearComponentes();
@@ -39,30 +42,13 @@ public class InscribirAlumnosPanel extends JPanel {
                 BorderFactory.createLineBorder(ThemeConfig.COLOR_BORDE_LINEA_SUAVE, 1),
                 BorderFactory.createEmptyBorder(20, 20, 20, 20)
         ));
-        setPreferredSize(new Dimension(600, 500));
+        setPreferredSize(new Dimension(700, 500));
     }
 
     private void crearComponentes() {
-        modeloLista = new DefaultListModel<>();
-        listaAlumnos = new JList<>(modeloLista);
-        listaAlumnos.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        listaAlumnos.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-        listaAlumnos.setForeground(ThemeConfig.COLOR_TEXTO);
-        listaAlumnos.setFont(new Font("Arial", Font.PLAIN, 12));
-
-        // Renderer personalizado para mostrar nombre y legajo
-        listaAlumnos.setCellRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                                                          boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Alumno) {
-                    Alumno alumno = (Alumno) value;
-                    setText(alumno.getNombre() + " (" + alumno.getLegajo() + ")");
-                }
-                return this;
-            }
-        });
+        listaPanelAlumnos = new JPanel();
+        listaPanelAlumnos.setLayout(new BoxLayout(listaPanelAlumnos, BoxLayout.Y_AXIS));
+        listaPanelAlumnos.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
         btnInscribir = MyButton.boton6("Inscribir", onInscribir);
         btnCancelar = MyButton.boton7("Cancelar", onCancelar);
@@ -77,15 +63,15 @@ public class InscribirAlumnosPanel extends JPanel {
         headerPanel.add(MyLabel.titulo("Inscribir Alumnos a: " + carrera.getNombre()));
         add(headerPanel, BorderLayout.NORTH);
 
-        // Lista de alumnos
+        // Panel central con scroll
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        centerPanel.add(MyLabel.subtitulo("Alumnos disponibles (Ctrl+Click para seleccionar múltiples):"), BorderLayout.NORTH);
+        centerPanel.add(MyLabel.subtitulo("Selecciona los alumnos que deseas inscribir:"), BorderLayout.NORTH);
 
-        MyScroll scrollAlumnos = MyScroll.crearVertical(listaAlumnos);
-        scrollAlumnos.setPreferredSize(new Dimension(550, 300));
+        MyScroll scrollAlumnos = MyScroll.crearVertical(listaPanelAlumnos);
+        scrollAlumnos.setPreferredSize(new Dimension(650, 300));
         centerPanel.add(scrollAlumnos, BorderLayout.CENTER);
 
         add(centerPanel, BorderLayout.CENTER);
@@ -102,26 +88,76 @@ public class InscribirAlumnosPanel extends JPanel {
         List<Alumno> todosLosAlumnos = Facultad.getInstance().getAlumnos();
         List<Alumno> alumnosCarrera = carrera.getAlumnos();
 
+        checkboxesAlumnos.clear();
+        listaPanelAlumnos.removeAll();
+
         // Solo mostrar alumnos que NO están ya inscriptos en la carrera
         for (Alumno alumno : todosLosAlumnos) {
             if (!alumnosCarrera.contains(alumno)) {
-                modeloLista.addElement(alumno);
+                JPanel itemPanel = crearItemAlumno(alumno);
+                listaPanelAlumnos.add(itemPanel);
+                listaPanelAlumnos.add(Box.createVerticalStrut(5));
             }
         }
+
+        // Si no hay alumnos disponibles
+        if (checkboxesAlumnos.isEmpty()) {
+            JPanel emptyPanel = new JPanel(new FlowLayout());
+            emptyPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+            emptyPanel.add(MyLabel.info("No hay alumnos disponibles para inscribir"));
+            listaPanelAlumnos.add(emptyPanel);
+        }
+
+        listaPanelAlumnos.revalidate();
+        listaPanelAlumnos.repaint();
+    }
+
+    private JPanel crearItemAlumno(Alumno alumno) {
+        JPanel itemPanel = new JPanel(new BorderLayout());
+        itemPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        itemPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(ThemeConfig.COLOR_BORDE_LINEA_SUAVE),
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)
+        ));
+        itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+
+        // Checkbox
+        JCheckBox checkbox = new JCheckBox();
+        checkbox.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        checkbox.setForeground(ThemeConfig.COLOR_TEXTO);
+        checkboxesAlumnos.put(alumno.getLegajo(), checkbox);
+
+        // Información del alumno
+        JPanel infoPanel = new JPanel(new GridLayout(1, 1));
+        infoPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+
+        MyLabel nombreLabel = MyLabel.texto(alumno.getNombre() + " (" + alumno.getLegajo() + ")");
+        infoPanel.add(nombreLabel);
+
+        itemPanel.add(checkbox, BorderLayout.WEST);
+        itemPanel.add(infoPanel, BorderLayout.CENTER);
+
+        return itemPanel;
     }
 
     public List<String> getAlumnosSeleccionados() {
-        List<Alumno> seleccionados = listaAlumnos.getSelectedValuesList();
-        List<String> legajos = new ArrayList<>();
+        List<String> seleccionados = new ArrayList<>();
 
-        for (Alumno alumno : seleccionados) {
-            legajos.add(alumno.getLegajo());
+        for (Map.Entry<String, JCheckBox> entry : checkboxesAlumnos.entrySet()) {
+            if (entry.getValue().isSelected()) {
+                seleccionados.add(entry.getKey());
+            }
         }
 
-        return legajos;
+        return seleccionados;
     }
 
     public boolean haySeleccion() {
-        return !listaAlumnos.getSelectedValuesList().isEmpty();
+        for (JCheckBox checkbox : checkboxesAlumnos.values()) {
+            if (checkbox.isSelected()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

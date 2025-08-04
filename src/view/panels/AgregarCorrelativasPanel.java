@@ -10,11 +10,13 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AgregarCorrelativasPanel extends JPanel {
 
-    private JList<Materia> listaMaterias;
-    private DefaultListModel<Materia> modeloLista;
+    private JPanel listaPanelMaterias;
+    private Map<String, JCheckBox> checkboxesMaterias; // Mapa código -> checkbox
     private MyButton btnAgregar;
     private MyButton btnCancelar;
     private Materia materia;
@@ -25,6 +27,7 @@ public class AgregarCorrelativasPanel extends JPanel {
         this.materia = materia;
         this.onAgregar = onAgregar;
         this.onCancelar = onCancelar;
+        this.checkboxesMaterias = new HashMap<>();
 
         configurarPanel();
         crearComponentes();
@@ -38,32 +41,15 @@ public class AgregarCorrelativasPanel extends JPanel {
                 BorderFactory.createLineBorder(ThemeConfig.COLOR_BORDE_LINEA_SUAVE, 1),
                 BorderFactory.createEmptyBorder(20, 20, 20, 20)
         ));
-        setPreferredSize(new Dimension(600, 500));
+        setPreferredSize(new Dimension(700, 500));
     }
 
     private void crearComponentes() {
-        modeloLista = new DefaultListModel<>();
-        listaMaterias = new JList<>(modeloLista);
-        listaMaterias.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        listaMaterias.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-        listaMaterias.setForeground(ThemeConfig.COLOR_TEXTO);
-        listaMaterias.setFont(new Font("Arial", Font.PLAIN, 12));
+        listaPanelMaterias = new JPanel();
+        listaPanelMaterias.setLayout(new BoxLayout(listaPanelMaterias, BoxLayout.Y_AXIS));
+        listaPanelMaterias.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
-        // Renderer personalizado
-        listaMaterias.setCellRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                                                          boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Materia) {
-                    Materia m = (Materia) value;
-                    setText(m.getNombre() + " (" + m.getCodigo() + ") - Cuatr: " + m.getCuatrimestre());
-                }
-                return this;
-            }
-        });
-
-        btnAgregar = MyButton.boton6("Agregar Seleccionadas", onAgregar);
+        btnAgregar = MyButton.boton6("Agregar", onAgregar);
         btnCancelar = MyButton.boton7("Cancelar", onCancelar);
     }
 
@@ -86,15 +72,15 @@ public class AgregarCorrelativasPanel extends JPanel {
         infoPanel.add(MyLabel.info("Correlativas actuales: " + correlativasActuales), BorderLayout.CENTER);
         add(infoPanel, BorderLayout.NORTH);
 
-        // Lista de materias
+        // Panel central con scroll
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(5, 10, 10, 10));
 
-        centerPanel.add(MyLabel.subtitulo("Materias disponibles (Ctrl+Click para múltiples):"), BorderLayout.NORTH);
+        centerPanel.add(MyLabel.subtitulo("Selecciona las materias correlativas:"), BorderLayout.NORTH);
 
-        MyScroll scrollMaterias = MyScroll.crearVertical(listaMaterias);
-        scrollMaterias.setPreferredSize(new Dimension(550, 300));
+        MyScroll scrollMaterias = MyScroll.crearVertical(listaPanelMaterias);
+        scrollMaterias.setPreferredSize(new Dimension(650, 300));
         centerPanel.add(scrollMaterias, BorderLayout.CENTER);
 
         add(centerPanel, BorderLayout.CENTER);
@@ -110,27 +96,85 @@ public class AgregarCorrelativasPanel extends JPanel {
     private void cargarMaterias() {
         List<Materia> todasLasMaterias = Facultad.getInstance().getMaterias();
 
+        checkboxesMaterias.clear();
+        listaPanelMaterias.removeAll();
+
         for (Materia m : todasLasMaterias) {
             // No mostrar la materia actual ni sus correlativas existentes
             if (!m.getCodigo().equals(materia.getCodigo()) &&
                     !materia.getCorrelativas().contains(m)) {
-                modeloLista.addElement(m);
+                JPanel itemPanel = crearItemMateria(m);
+                listaPanelMaterias.add(itemPanel);
+                listaPanelMaterias.add(Box.createVerticalStrut(5));
             }
         }
+
+        // Si no hay materias disponibles
+        if (checkboxesMaterias.isEmpty()) {
+            JPanel emptyPanel = new JPanel(new FlowLayout());
+            emptyPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+            emptyPanel.add(MyLabel.info("No hay materias disponibles para agregar como correlativas"));
+            listaPanelMaterias.add(emptyPanel);
+        }
+
+        listaPanelMaterias.revalidate();
+        listaPanelMaterias.repaint();
+    }
+
+    private JPanel crearItemMateria(Materia m) {
+        JPanel itemPanel = new JPanel(new BorderLayout());
+        itemPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        itemPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(ThemeConfig.COLOR_BORDE_LINEA_SUAVE),
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)
+        ));
+        itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+
+        // Checkbox
+        JCheckBox checkbox = new JCheckBox();
+        checkbox.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        checkbox.setForeground(ThemeConfig.COLOR_TEXTO);
+        checkboxesMaterias.put(m.getCodigo(), checkbox);
+
+        // Información de la materia
+        JPanel infoPanel = new JPanel(new GridLayout(2, 1));
+        infoPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+
+        String tipoTexto = m.esObligatoria() ? "Obligatoria" : "Optativa";
+        String correlativasTexto = m.getCorrelativas().isEmpty() ? "Sin correlativas" :
+                m.getCorrelativas().size() + " correlativas";
+
+        MyLabel nombreLabel = MyLabel.texto(m.getNombre() + " (" + m.getCodigo() + ")");
+        MyLabel detallesLabel = MyLabel.info("Cuatrimestre: " + m.getCuatrimestre() +
+                " | " + tipoTexto + " | " + correlativasTexto);
+
+        infoPanel.add(nombreLabel);
+        infoPanel.add(detallesLabel);
+
+        itemPanel.add(checkbox, BorderLayout.WEST);
+        itemPanel.add(infoPanel, BorderLayout.CENTER);
+
+        return itemPanel;
     }
 
     public List<String> getCorrelativasSeleccionadas() {
-        List<Materia> seleccionadas = listaMaterias.getSelectedValuesList();
-        List<String> codigos = new ArrayList<>();
+        List<String> seleccionadas = new ArrayList<>();
 
-        for (Materia m : seleccionadas) {
-            codigos.add(m.getCodigo());
+        for (Map.Entry<String, JCheckBox> entry : checkboxesMaterias.entrySet()) {
+            if (entry.getValue().isSelected()) {
+                seleccionadas.add(entry.getKey());
+            }
         }
 
-        return codigos;
+        return seleccionadas;
     }
 
     public boolean haySeleccion() {
-        return !listaMaterias.getSelectedValuesList().isEmpty();
+        for (JCheckBox checkbox : checkboxesMaterias.values()) {
+            if (checkbox.isSelected()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

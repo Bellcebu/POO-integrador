@@ -43,7 +43,7 @@ public class MateriasPanel extends JPanel {
                 "Buscar por nombre o código",
                 "Agregar Correlativas",  // Texto botón 2
                 "Calificar",            // Texto botón 3
-                "Info"                  // Texto botón 4
+                "Informacion"                  // Texto botón 4
         );
 
         add(seccionMaterias, BorderLayout.CENTER);

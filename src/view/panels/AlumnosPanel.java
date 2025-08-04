@@ -46,7 +46,7 @@ public class AlumnosPanel extends JPanel {
                 "Buscar por nombre o legajo",
                 "Inscribir a Materias",  // Texto botón 2
                 "Ver Materias",          // Texto botón 3
-                "Info"                   // Texto botón 4
+                "Informacion"                   // Texto botón 4
         );
 
         add(seccionAlumnos, BorderLayout.CENTER);

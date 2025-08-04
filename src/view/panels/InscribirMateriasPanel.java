@@ -10,14 +10,16 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class InscribirMateriasPanel extends JPanel {
 
     private Alumno alumno;
     private AlumnoController alumnoController;
     private JComboBox<String> cmbCarreras;
-    private JList<Materia> listaMaterias;
-    private DefaultListModel<Materia> modeloLista;
+    private JPanel listaPanelMaterias;
+    private Map<String, JCheckBox> checkboxesMaterias; // Mapa código -> checkbox
     private MyButton btnCargar;
     private MyButton btnInscribir;
     private MyButton btnCancelar;
@@ -31,6 +33,7 @@ public class InscribirMateriasPanel extends JPanel {
         this.alumnoController = alumnoController;
         this.onInscribir = onInscribir;
         this.onCancelar = onCancelar;
+        this.checkboxesMaterias = new HashMap<>();
 
         configurarPanel();
         crearComponentes();
@@ -54,28 +57,10 @@ public class InscribirMateriasPanel extends JPanel {
         cmbCarreras.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         cmbCarreras.setForeground(ThemeConfig.COLOR_TEXTO);
 
-        // Lista materias
-        modeloLista = new DefaultListModel<>();
-        listaMaterias = new JList<>(modeloLista);
-        listaMaterias.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        listaMaterias.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-        listaMaterias.setForeground(ThemeConfig.COLOR_TEXTO);
-        listaMaterias.setFont(new Font("Arial", Font.PLAIN, 12));
-
-        // Renderer personalizado
-        listaMaterias.setCellRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                                                          boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof Materia) {
-                    Materia materia = (Materia) value;
-                    String tipo = materia.esObligatoria() ? "Obligatoria" : "Optativa";
-                    setText(materia.getNombre() + " (" + materia.getCodigo() + ") - " + tipo + " - Cuatr: " + materia.getCuatrimestre());
-                }
-                return this;
-            }
-        });
+        // Panel para lista de materias
+        listaPanelMaterias = new JPanel();
+        listaPanelMaterias.setLayout(new BoxLayout(listaPanelMaterias, BoxLayout.Y_AXIS));
+        listaPanelMaterias.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
         // Botones
         btnCargar = MyButton.boton5("Cargar Materias", e -> cargarMaterias());
@@ -110,9 +95,9 @@ public class InscribirMateriasPanel extends JPanel {
         materiasPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         materiasPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
 
-        materiasPanel.add(MyLabel.subtitulo("Materias disponibles (Ctrl+Click para múltiples):"), BorderLayout.NORTH);
+        materiasPanel.add(MyLabel.subtitulo("Materias disponibles:"), BorderLayout.NORTH);
 
-        MyScroll scrollMaterias = MyScroll.crearVertical(listaMaterias);
+        MyScroll scrollMaterias = MyScroll.crearVertical(listaPanelMaterias);
         scrollMaterias.setPreferredSize(new Dimension(650, 350));
         materiasPanel.add(scrollMaterias, BorderLayout.CENTER);
 
@@ -142,7 +127,8 @@ public class InscribirMateriasPanel extends JPanel {
     }
 
     private void cargarMaterias() {
-        modeloLista.clear();
+        checkboxesMaterias.clear();
+        listaPanelMaterias.removeAll();
 
         if (carrerasAlumno.isEmpty()) {
             return;
@@ -155,30 +141,77 @@ public class InscribirMateriasPanel extends JPanel {
                     alumno.getLegajo(), carreraSeleccionada.getCodigo());
 
             if (materiasDisponibles.isEmpty()) {
-                // Mostrar mensaje en la lista
-                JOptionPane.showMessageDialog(this,
-                        "No hay materias disponibles para esta carrera.\nPuede que ya esté inscripto en todas o no cumpla correlativas.",
-                        "Sin materias disponibles", JOptionPane.INFORMATION_MESSAGE);
+                JPanel emptyPanel = new JPanel(new FlowLayout());
+                emptyPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+                emptyPanel.add(MyLabel.info("No hay materias disponibles para esta carrera"));
+                listaPanelMaterias.add(emptyPanel);
             } else {
                 for (Materia materia : materiasDisponibles) {
-                    modeloLista.addElement(materia);
+                    JPanel itemPanel = crearItemMateria(materia);
+                    listaPanelMaterias.add(itemPanel);
+                    listaPanelMaterias.add(Box.createVerticalStrut(5));
                 }
             }
         }
+
+        listaPanelMaterias.revalidate();
+        listaPanelMaterias.repaint();
+    }
+
+    private JPanel crearItemMateria(Materia materia) {
+        JPanel itemPanel = new JPanel(new BorderLayout());
+        itemPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        itemPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(ThemeConfig.COLOR_BORDE_LINEA_SUAVE),
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)
+        ));
+        itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+
+        // Checkbox
+        JCheckBox checkbox = new JCheckBox();
+        checkbox.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        checkbox.setForeground(ThemeConfig.COLOR_TEXTO);
+        checkboxesMaterias.put(materia.getCodigo(), checkbox);
+
+        // Información de la materia
+        JPanel infoPanel = new JPanel(new GridLayout(2, 1));
+        infoPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+
+        String tipoTexto = materia.esObligatoria() ? "Obligatoria" : "Optativa";
+        String correlativasTexto = materia.getCorrelativas().isEmpty() ? "Sin correlativas" :
+                materia.getCorrelativas().size() + " correlativas";
+
+        MyLabel nombreLabel = MyLabel.texto(materia.getNombre() + " (" + materia.getCodigo() + ")");
+        MyLabel detallesLabel = MyLabel.info("Cuatrimestre: " + materia.getCuatrimestre() +
+                " | " + tipoTexto + " | " + correlativasTexto);
+
+        infoPanel.add(nombreLabel);
+        infoPanel.add(detallesLabel);
+
+        itemPanel.add(checkbox, BorderLayout.WEST);
+        itemPanel.add(infoPanel, BorderLayout.CENTER);
+
+        return itemPanel;
     }
 
     public List<String> getMateriasSeleccionadas() {
-        List<Materia> seleccionadas = listaMaterias.getSelectedValuesList();
-        List<String> codigos = new ArrayList<>();
+        List<String> seleccionadas = new ArrayList<>();
 
-        for (Materia materia : seleccionadas) {
-            codigos.add(materia.getCodigo());
+        for (Map.Entry<String, JCheckBox> entry : checkboxesMaterias.entrySet()) {
+            if (entry.getValue().isSelected()) {
+                seleccionadas.add(entry.getKey());
+            }
         }
 
-        return codigos;
+        return seleccionadas;
     }
 
     public boolean haySeleccion() {
-        return !listaMaterias.getSelectedValuesList().isEmpty();
+        for (JCheckBox checkbox : checkboxesMaterias.values()) {
+            if (checkbox.isSelected()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
