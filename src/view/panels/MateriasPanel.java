@@ -1,9 +1,8 @@
 package view.panels;
 
-import model.Materia;
-import model.Facultad;
-import view.components.MyLayout;
-import controller.MateriaController;
+import model.*;
+import controller.*;
+import view.components.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -30,20 +29,23 @@ public class MateriasPanel extends JPanel {
         JPanel seccionMaterias = MyLayout.crearSeccion(
                 "Materias",
                 cargarListaMaterias(),
-                e -> crearMateria(), // CREAR
-                e -> agregarCorrelativas(e.getActionCommand()), // AGREGAR CORRELATIVAS
-                e -> calificar(e.getActionCommand()), // CALIFICAR
-                e -> mostrarInfo(e.getActionCommand()), // INFO
-                e -> { ordenAZ = !ordenAZ; actualizarLista(); },
+                e -> crearMateria(),
+                e -> agregarCorrelativas(e.getActionCommand()),
+                e -> calificar(e.getActionCommand()),
+                e -> mostrarInfo(e.getActionCommand()),
+                e -> {
+                    ordenAZ = !ordenAZ;
+                    actualizarLista();
+                },
                 ordenAZ ? "A→Z" : "Z→A",
                 e -> {
                     textoBusqueda = e.getActionCommand();
                     actualizarLista();
                 },
                 "Buscar por nombre o código",
-                "Agregar Correlativas",  // Texto botón 2
-                "Calificar",            // Texto botón 3
-                "Informacion"                  // Texto botón 4
+                "Agregar Correlativas",
+                "Calificar",
+                "Informacion"
         );
 
         add(seccionMaterias, BorderLayout.CENTER);
@@ -57,7 +59,6 @@ public class MateriasPanel extends JPanel {
                     int cuatrimestre = formularioMateria.getCuatrimestre();
                     boolean esObligatoria = formularioMateria.esObligatoria();
 
-                    // Validaciones SIMPLIFICADAS - Sin carrera
                     if (codigo.isEmpty() || nombre.isEmpty()) {
                         JOptionPane.showMessageDialog(this, "Código y Nombre son obligatorios",
                                 "Error", JOptionPane.ERROR_MESSAGE);
@@ -70,7 +71,6 @@ public class MateriasPanel extends JPanel {
                         return;
                     }
 
-                    // Intentar crear la materia SIN pasar carrera
                     boolean exito = materiaController.agregarAccion(codigo, nombre, cuatrimestre, esObligatoria);
                     if (exito) {
                         JOptionPane.showMessageDialog(this, "Materia creada exitosamente.\nPuedes asignarla a carreras desde el panel de cada carrera.",
@@ -144,7 +144,6 @@ public class MateriasPanel extends JPanel {
     private List<MyLayout.AlumnoVisual> cargarListaMaterias() {
         List<Materia> materias = materiaController.buscarMaterias(textoBusqueda);
 
-        // Aplicar ordenamiento
         if (ordenAZ) {
             materias.sort((m1, m2) -> m1.getNombre().compareToIgnoreCase(m2.getNombre()));
         } else {

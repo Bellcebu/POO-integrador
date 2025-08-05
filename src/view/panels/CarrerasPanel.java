@@ -1,9 +1,8 @@
 package view.panels;
 
-import model.Carrera;
-import model.Facultad;
-import view.components.MyLayout;
-import controller.CarreraController;
+import model.*;
+import view.components.*;
+import controller.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -57,7 +56,6 @@ public class CarrerasPanel extends JPanel {
                     int cantidadOptativas = formularioCarrera.getCantidadOptativas();
                     String tipoPlan = formularioCarrera.getTipoPlan();
 
-                    // Validaciones
                     if (codigo.isEmpty() || nombre.isEmpty()) {
                         JOptionPane.showMessageDialog(this, "Código y Nombre son obligatorios",
                                 "Error", JOptionPane.ERROR_MESSAGE);
@@ -70,7 +68,6 @@ public class CarrerasPanel extends JPanel {
                         return;
                     }
 
-                    // Intentar crear la carrera
                     boolean exito = carreraController.agregarAccion(codigo, nombre, cantidadOptativas, tipoPlan);
                     if (exito) {
                         JOptionPane.showMessageDialog(this, "Carrera creada exitosamente",
@@ -162,7 +159,6 @@ public class CarrerasPanel extends JPanel {
     private List<MyLayout.AlumnoVisual> cargarListaCarreras() {
         List<Carrera> carreras = carreraController.buscarCarreras(textoBusqueda);
 
-        // Aplicar ordenamiento
         if (ordenAZ) {
             carreras.sort((c1, c2) -> c1.getNombre().compareToIgnoreCase(c2.getNombre()));
         } else {

@@ -1,6 +1,8 @@
 package persistence;
 
 import model.*;
+
+import java.io.*;
 import java.util.List;
 
 public class ArchivoInscripciones {
@@ -8,20 +10,19 @@ public class ArchivoInscripciones {
 
     public static void actualizar() {
         try {
-            java.io.File archivo = new java.io.File(ARCHIVO);
+            File archivo = new File(ARCHIVO);
             archivo.getParentFile().mkdirs();
 
-            java.io.BufferedWriter writer = new java.io.BufferedWriter(new java.io.FileWriter(archivo));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(archivo));
 
-            // Recorrer todos los alumnos y sus inscripciones
             for (Alumno alumno : Facultad.getInstance().getAlumnos()) {
                 for (InscripcionMateria inscripcion : alumno.getInscripciones().values()) {
                     StringBuilder sb = new StringBuilder();
-                    sb.append(alumno.getLegajo()).append("☆");
-                    sb.append(inscripcion.getMateria().getCodigo()).append("☆");
-                    sb.append(inscripcion.aproboParcial()).append("☆");
-                    sb.append(inscripcion.aproboFinal()).append("☆");
-                    sb.append(inscripcion.promociono());
+                    sb.append(alumno.getLegajo()).append("☆")
+                            .append(inscripcion.getMateria().getCodigo()).append("☆")
+                            .append(inscripcion.aproboParcial()).append("☆")
+                            .append(inscripcion.aproboFinal()).append("☆")
+                            .append(inscripcion.promociono());
 
                     writer.write(sb.toString());
                     writer.newLine();
@@ -29,8 +30,8 @@ public class ArchivoInscripciones {
             }
 
             writer.close();
-        } catch (java.io.IOException e) {
-            System.out.println("Error al actualizar inscripciones: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error al actualizar inscripciones: " + e.getMessage());
         }
     }
 }

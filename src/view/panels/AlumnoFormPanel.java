@@ -20,17 +20,10 @@ public class AlumnoFormPanel extends JPanel {
     private String nombreValor;
     private String legajoValor;
 
-    // Constructor para CREAR
     public AlumnoFormPanel(ActionListener onGuardar, ActionListener onCancelar) {
         this("", "", onGuardar, onCancelar, false);
     }
 
-    // Constructor para EDITAR
-    public AlumnoFormPanel(String nombre, String legajo, ActionListener onGuardar, ActionListener onCancelar) {
-        this(nombre, legajo, onGuardar, onCancelar, false);
-    }
-
-    // Constructor para ELIMINAR
     public AlumnoFormPanel(String nombre, String legajo, ActionListener onGuardar, ActionListener onCancelar, boolean esEliminar) {
         this.onGuardar = onGuardar;
         this.onCancelar = onCancelar;
@@ -61,7 +54,7 @@ public class AlumnoFormPanel extends JPanel {
 
     private void crearComponentes() {
         txtNombre = new JTextField(20);
-        txtNombre.setFont(new Font("Arial", Font.PLAIN, 12));
+        txtNombre.setFont(new Font("Arial", Font.PLAIN, 18));
         txtNombre.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         txtNombre.setForeground(ThemeConfig.COLOR_TEXTO);
         txtNombre.setBorder(BorderFactory.createCompoundBorder(
@@ -70,7 +63,7 @@ public class AlumnoFormPanel extends JPanel {
         ));
 
         txtLegajo = new JTextField(15);
-        txtLegajo.setFont(new Font("Arial", Font.PLAIN, 12));
+        txtLegajo.setFont(new Font("Arial", Font.PLAIN, 18));
         txtLegajo.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         txtLegajo.setForeground(ThemeConfig.COLOR_TEXTO);
         txtLegajo.setBorder(BorderFactory.createCompoundBorder(
@@ -100,7 +93,7 @@ public class AlumnoFormPanel extends JPanel {
         gbc.gridx = 0; gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.EAST;
-        add(MyLabel.texto("Nombre:"), gbc);
+        add(MyLabel.textoFormulario("Nombre:"), gbc);
 
         gbc.gridx = 1; gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
@@ -110,7 +103,7 @@ public class AlumnoFormPanel extends JPanel {
         gbc.gridx = 0; gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
-        add(MyLabel.texto("Legajo:"), gbc);
+        add(MyLabel.textoFormulario("Legajo:"), gbc);
 
         gbc.gridx = 1; gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.WEST;

@@ -4,7 +4,7 @@ import view.config.ThemeConfig;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class SidebarNavbar extends JPanel {
 
@@ -54,7 +54,7 @@ public class SidebarNavbar extends JPanel {
         add(Box.createVerticalGlue());
 
         JPanel togglePanel = new JPanel();
-        togglePanel.setLayout(null); // Layout absoluto
+        togglePanel.setLayout(null);
         togglePanel.setBackground(ThemeConfig.COLOR_SIDEBAR_BACKGROUND);
         togglePanel.setPreferredSize(new Dimension(200, 60));
 
@@ -76,7 +76,7 @@ public class SidebarNavbar extends JPanel {
                         panel.removeAll();
                         themeToggleButton = MyButton.tema("", e -> toggleTema());
 
-                        if (panel.getLayout() == null) { // Layout absoluto
+                        if (panel.getLayout() == null) {
                             themeToggleButton.setBounds(15, 210, 50, 50);
                         }
 
@@ -125,7 +125,7 @@ public class SidebarNavbar extends JPanel {
         JButton btn = new JButton(texto);
         btn.setBackground(ThemeConfig.COLOR_SIDEBAR_BUTTON);
         btn.setForeground(ThemeConfig.COLOR_SIDEBAR_TEXT);
-        btn.setFont(new Font("Arial", Font.BOLD, 12));
+        btn.setFont(new Font("Arial", Font.BOLD, 18));
         btn.setBorderPainted(false);
         btn.setFocusPainted(false);
         btn.setAlignmentX(Component.CENTER_ALIGNMENT);

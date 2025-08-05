@@ -57,7 +57,7 @@ public class CarreraFormPanel extends JPanel {
         ));
 
         txtCantidadOptativas = new JTextField(10);
-        txtCantidadOptativas.setFont(new Font("Arial", Font.PLAIN, 12));
+        txtCantidadOptativas.setFont(new Font("Arial", Font.PLAIN, 18));
         txtCantidadOptativas.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         txtCantidadOptativas.setForeground(ThemeConfig.COLOR_TEXTO);
         txtCantidadOptativas.setBorder(BorderFactory.createCompoundBorder(
@@ -67,7 +67,7 @@ public class CarreraFormPanel extends JPanel {
 
         String[] tiposPlanes = {"PLANA", "PLANB", "PLANC", "PLAND", "PLANE"};
         cmbTipoPlan = new JComboBox<>(tiposPlanes);
-        cmbTipoPlan.setFont(new Font("Arial", Font.PLAIN, 12));
+        cmbTipoPlan.setFont(new Font("Arial", Font.PLAIN, 18));
         cmbTipoPlan.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         cmbTipoPlan.setForeground(ThemeConfig.COLOR_TEXTO);
 
@@ -80,57 +80,51 @@ public class CarreraFormPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 5, 10, 5);
 
-        // Título
         gbc.gridx = 0; gbc.gridy = 0;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         add(MyLabel.titulo("Nueva Carrera"), gbc);
 
-        // Código
         gbc.gridx = 0; gbc.gridy = 1;
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.EAST;
-        add(MyLabel.texto("Código:"), gbc);
+        add(MyLabel.textoFormulario("Código:"), gbc);
 
         gbc.gridx = 1; gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(txtCodigo, gbc);
 
-        // Nombre
         gbc.gridx = 0; gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
-        add(MyLabel.texto("Nombre:"), gbc);
+        add(MyLabel.textoFormulario("Nombre:"), gbc);
 
         gbc.gridx = 1; gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(txtNombre, gbc);
 
-        // Cantidad Optativas
         gbc.gridx = 0; gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
-        add(MyLabel.texto("Optativas necesarias:"), gbc);
+        add(MyLabel.textoFormulario("Optativas necesarias:"), gbc);
 
         gbc.gridx = 1; gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(txtCantidadOptativas, gbc);
 
-        // Tipo de Plan
         gbc.gridx = 0; gbc.gridy = 4;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
-        add(MyLabel.texto("Plan de Estudio:"), gbc);
+        add(MyLabel.textoFormulario("Plan de Estudio:"), gbc);
 
         gbc.gridx = 1; gbc.gridy = 4;
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(cmbTipoPlan, gbc);
 
-        // Botones
         JPanel panelBotones = new JPanel(new FlowLayout());
         panelBotones.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         panelBotones.add(btnGuardar);
@@ -143,7 +137,6 @@ public class CarreraFormPanel extends JPanel {
         add(panelBotones, gbc);
     }
 
-    // Getters para obtener los valores
     public String getCodigo() {
         return txtCodigo.getText().trim();
     }
@@ -156,7 +149,7 @@ public class CarreraFormPanel extends JPanel {
         try {
             return Integer.parseInt(txtCantidadOptativas.getText().trim());
         } catch (NumberFormatException e) {
-            return -1; // Valor inválido
+            return -1;
         }
     }
 

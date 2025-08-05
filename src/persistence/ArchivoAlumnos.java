@@ -1,8 +1,12 @@
 package persistence;
 
 import model.Alumno;
-import java.util.List;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ArchivoAlumnos {
     private static final String ARCHIVO = "data/alumnos.txt";
@@ -10,9 +14,7 @@ public class ArchivoAlumnos {
     private static List<Alumno> cargarTodos() {
         List<Alumno> alumnos = new ArrayList<>();
         try {
-            java.util.List<String> lineas = java.nio.file.Files.readAllLines(
-                    java.nio.file.Paths.get(ARCHIVO));
-
+            List<String> lineas = Files.readAllLines(Paths.get(ARCHIVO));
             for (String linea : lineas) {
                 if (!linea.trim().isEmpty()) {
                     Alumno alumno = Alumno.fromString(linea);
@@ -21,25 +23,25 @@ public class ArchivoAlumnos {
                     }
                 }
             }
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
+            System.err.println("Error al leer el archivo de alumnos: " + e.getMessage());
         }
         return alumnos;
     }
 
     private static void guardarTodos(List<Alumno> alumnos) {
         try {
-            java.io.File archivo = new java.io.File(ARCHIVO);
+            File archivo = new File(ARCHIVO);
             archivo.getParentFile().mkdirs();
 
-            java.io.BufferedWriter writer = new java.io.BufferedWriter(new java.io.FileWriter(archivo));
-
+            BufferedWriter writer = new BufferedWriter(new FileWriter(archivo));
             for (Alumno alumno : alumnos) {
                 writer.write(alumno.toString());
                 writer.newLine();
             }
-
             writer.close();
-        } catch (java.io.IOException e) {
+        } catch (IOException e) {
+            System.err.println("Error al guardar los alumnos: " + e.getMessage());
         }
     }
 
@@ -48,5 +50,4 @@ public class ArchivoAlumnos {
         alumnos.add(alumno);
         guardarTodos(alumnos);
     }
-
 }

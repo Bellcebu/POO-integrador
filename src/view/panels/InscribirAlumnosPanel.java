@@ -1,23 +1,20 @@
 package view.panels;
 
-import model.Alumno;
-import model.Carrera;
-import model.Facultad;
+import model.*;
+import controller.*;
+import java.util.List;
 import view.components.*;
-import view.config.ThemeConfig;
+import view.config.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.event.*;
+import java.util.*;
 
 public class InscribirAlumnosPanel extends JPanel {
 
     private JPanel listaPanelAlumnos;
-    private Map<String, JCheckBox> checkboxesAlumnos; // Mapa legajo -> checkbox
+    private Map<String, JCheckBox> checkboxesAlumnos;
     private MyButton btnInscribir;
     private MyButton btnCancelar;
     private Carrera carrera;
@@ -57,13 +54,11 @@ public class InscribirAlumnosPanel extends JPanel {
     private void configurarLayout() {
         setLayout(new BorderLayout());
 
-        // Título
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         headerPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-        headerPanel.add(MyLabel.titulo("Inscribir Alumnos a: " + carrera.getNombre()));
+        headerPanel.add(MyLabel.textoFormulario("Inscribir Alumnos a: " + carrera.getNombre()));
         add(headerPanel, BorderLayout.NORTH);
 
-        // Panel central con scroll
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -76,7 +71,6 @@ public class InscribirAlumnosPanel extends JPanel {
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // Botones
         JPanel bottomPanel = new JPanel(new FlowLayout());
         bottomPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         bottomPanel.add(btnInscribir);
@@ -91,7 +85,6 @@ public class InscribirAlumnosPanel extends JPanel {
         checkboxesAlumnos.clear();
         listaPanelAlumnos.removeAll();
 
-        // Solo mostrar alumnos que NO están ya inscriptos en la carrera
         for (Alumno alumno : todosLosAlumnos) {
             if (!alumnosCarrera.contains(alumno)) {
                 JPanel itemPanel = crearItemAlumno(alumno);
@@ -100,7 +93,6 @@ public class InscribirAlumnosPanel extends JPanel {
             }
         }
 
-        // Si no hay alumnos disponibles
         if (checkboxesAlumnos.isEmpty()) {
             JPanel emptyPanel = new JPanel(new FlowLayout());
             emptyPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
@@ -121,17 +113,15 @@ public class InscribirAlumnosPanel extends JPanel {
         ));
         itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
 
-        // Checkbox
         JCheckBox checkbox = new JCheckBox();
         checkbox.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         checkbox.setForeground(ThemeConfig.COLOR_TEXTO);
         checkboxesAlumnos.put(alumno.getLegajo(), checkbox);
 
-        // Información del alumno
         JPanel infoPanel = new JPanel(new GridLayout(1, 1));
         infoPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
-        MyLabel nombreLabel = MyLabel.texto(alumno.getNombre() + " (" + alumno.getLegajo() + ")");
+        MyLabel nombreLabel = MyLabel.textoFormulario(alumno.getNombre() + " (" + alumno.getLegajo() + ")");
         infoPanel.add(nombreLabel);
 
         itemPanel.add(checkbox, BorderLayout.WEST);

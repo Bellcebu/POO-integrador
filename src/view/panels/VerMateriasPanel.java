@@ -1,13 +1,12 @@
 package view.panels;
 
 import model.*;
-import controller.AlumnoController;
+import controller.*;
 import view.components.*;
-import view.config.ThemeConfig;
-
+import view.config.*;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.List;
 
 public class VerMateriasPanel extends JPanel {
@@ -42,13 +41,11 @@ public class VerMateriasPanel extends JPanel {
     }
 
     private void crearComponentes() {
-        // Título
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         headerPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         headerPanel.add(MyLabel.titulo("Materias de: " + alumno.getNombre()));
         add(headerPanel, BorderLayout.NORTH);
 
-        // Panel principal con scroll
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
@@ -60,17 +57,14 @@ public class VerMateriasPanel extends JPanel {
             emptyPanel.add(MyLabel.info("El alumno no está inscripto en ninguna materia"));
             mainPanel.add(emptyPanel);
         } else {
-            // Resumen
             JPanel resumenPanel = crearResumen();
             mainPanel.add(resumenPanel);
             mainPanel.add(Box.createVerticalStrut(20));
 
-            // Encabezado de la tabla (SIN columna carrera)
             JPanel headerTablePanel = crearHeaderTabla();
             mainPanel.add(headerTablePanel);
             mainPanel.add(Box.createVerticalStrut(10));
 
-            // Filas de materias
             for (InscripcionMateria inscripcion : inscripciones) {
                 JPanel filaPanel = crearFilaMateria(inscripcion);
                 mainPanel.add(filaPanel);
@@ -81,7 +75,6 @@ public class VerMateriasPanel extends JPanel {
         MyScroll scrollPanel = MyScroll.crearVertical(mainPanel);
         add(scrollPanel, BorderLayout.CENTER);
 
-        // Botón volver
         JPanel bottomPanel = new JPanel(new FlowLayout());
         bottomPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         btnVolver = MyButton.boton7("Volver", onVolver);
@@ -130,11 +123,11 @@ public class VerMateriasPanel extends JPanel {
 
         MyLabel labelTitulo = new MyLabel(titulo, SwingConstants.CENTER);
         labelTitulo.setForeground(Color.WHITE);
-        labelTitulo.setFont(new Font("Arial", Font.BOLD, 12));
+        labelTitulo.setFont(new Font("Arial", Font.BOLD, 18));
 
         MyLabel labelValor = new MyLabel(valor, SwingConstants.CENTER);
         labelValor.setForeground(Color.WHITE);
-        labelValor.setFont(new Font("Arial", Font.BOLD, 20));
+        labelValor.setFont(new Font("Arial", Font.BOLD, 18));
 
         panel.add(labelTitulo, BorderLayout.NORTH);
         panel.add(labelValor, BorderLayout.CENTER);
@@ -142,7 +135,6 @@ public class VerMateriasPanel extends JPanel {
         return panel;
     }
 
-    // ACTUALIZADO: Sin columna carrera
     private JPanel crearHeaderTabla() {
         JPanel panel = new JPanel(new GridLayout(1, 5, 10, 5));
         panel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
@@ -157,7 +149,6 @@ public class VerMateriasPanel extends JPanel {
         return panel;
     }
 
-    // ACTUALIZADO: Sin columna carrera
     private JPanel crearFilaMateria(InscripcionMateria inscripcion) {
         JPanel panel = new JPanel(new GridLayout(1, 5, 10, 5));
         panel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
@@ -168,12 +159,10 @@ public class VerMateriasPanel extends JPanel {
 
         Materia materia = inscripcion.getMateria();
 
-        // Datos de la materia (SIN carrera)
-        panel.add(MyLabel.texto(materia.getNombre()));
-        panel.add(MyLabel.texto(materia.getCodigo()));
-        panel.add(MyLabel.texto(String.valueOf(materia.getCuatrimestre())));
+        panel.add(MyLabel.textoFormulario(materia.getNombre()));
+        panel.add(MyLabel.textoFormulario(materia.getCodigo()));
+        panel.add(MyLabel.textoFormulario(String.valueOf(materia.getCuatrimestre())));
 
-        // Estado
         String estado;
         Color colorEstado;
         if (inscripcion.promociono()) {
@@ -192,12 +181,11 @@ public class VerMateriasPanel extends JPanel {
 
         MyLabel labelEstado = MyLabel.texto(estado);
         labelEstado.setForeground(colorEstado);
-        labelEstado.setFont(new Font("Arial", Font.BOLD, 11));
+        labelEstado.setFont(new Font("Arial", Font.BOLD, 18));
         panel.add(labelEstado);
 
-        // Tipo
         String tipo = materia.esObligatoria() ? "Obligatoria" : "Optativa";
-        panel.add(MyLabel.texto(tipo));
+        panel.add(MyLabel.textoFormulario(tipo));
 
         return panel;
     }

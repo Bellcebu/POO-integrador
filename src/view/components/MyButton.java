@@ -20,11 +20,10 @@ public class MyButton extends JButton {
     }
 
     private void configurarEstiloBasico() {
-        setFont(new Font("Arial", Font.BOLD, 12));
+        setFont(new Font("Arial", Font.BOLD, 18));
         setFocusPainted(false);
         setBorderPainted(false);
         setContentAreaFilled(false);
-        setPreferredSize(new Dimension(120, 35));
         setCursor(new Cursor(Cursor.HAND_CURSOR));
         setOpaque(false);
     }
@@ -74,63 +73,56 @@ public class MyButton extends JButton {
     public static MyButton boton1(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_CREAR);
-        btn.setForeground(ThemeConfig.COLOR_TEXTO);
+        btn.setForeground(ThemeConfig.COLOR_TEXTO_BUTTON);
         return btn;
     }
 
     public static MyButton boton2(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_EDITAR);
-        btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setPreferredSize(new Dimension(125, 30));
+        btn.setForeground(ThemeConfig.COLOR_TEXTO_BUTTON);
         return btn;
     }
 
     public static MyButton boton3(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_ELIMINAR);
-        btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setPreferredSize(new Dimension(125, 30));
+        btn.setForeground(ThemeConfig.COLOR_TEXTO_BUTTON);
         return btn;
     }
 
     public static MyButton boton4(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_ACTUALIZAR);
-        btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setPreferredSize(new Dimension(100, 30));
+        btn.setForeground(ThemeConfig.COLOR_TEXTO_BUTTON);
         return btn;
     }
 
     public static MyButton boton5(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_ACTUALIZAR);
-        btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setPreferredSize(new Dimension(110, 35));
+        btn.setForeground(ThemeConfig.COLOR_TEXTO_BUTTON);
         return btn;
     }
 
     public static MyButton boton6(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_CREAR);
-        btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setPreferredSize(new Dimension(110, 35));
+        btn.setForeground(ThemeConfig.COLOR_TEXTO_BUTTON);
         return btn;
     }
 
     public static MyButton boton7(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_ELIMINAR);
-        btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setPreferredSize(new Dimension(110, 35));
+        btn.setForeground(ThemeConfig.COLOR_TEXTO_BUTTON);
         return btn;
     }
 
     public static MyButton boton8(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
         btn.setBackground(ThemeConfig.COLOR_ACTUALIZAR);
-        btn.setForeground(ThemeConfig.COLOR_TEXTO);
-        btn.setPreferredSize(new Dimension(110, 35));
+        btn.setForeground(ThemeConfig.COLOR_TEXTO_BUTTON);
         return btn;
     }
 

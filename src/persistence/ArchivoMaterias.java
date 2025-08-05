@@ -1,8 +1,12 @@
 package persistence;
 
 import model.Materia;
-import java.util.List;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ArchivoMaterias {
     private static final String ARCHIVO = "data/materias.txt";
@@ -10,9 +14,7 @@ public class ArchivoMaterias {
     private static List<Materia> cargarTodos() {
         List<Materia> materias = new ArrayList<>();
         try {
-            java.util.List<String> lineas = java.nio.file.Files.readAllLines(
-                    java.nio.file.Paths.get(ARCHIVO));
-
+            List<String> lineas = Files.readAllLines(Paths.get(ARCHIVO));
             for (String linea : lineas) {
                 if (!linea.trim().isEmpty()) {
                     Materia materia = Materia.fromString(linea);
@@ -21,27 +23,25 @@ public class ArchivoMaterias {
                     }
                 }
             }
-        } catch (java.io.IOException e) {
-            System.out.println("Error al cargar materias: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error al cargar materias: " + e.getMessage());
         }
         return materias;
     }
 
     private static void guardarTodos(List<Materia> materias) {
         try {
-            java.io.File archivo = new java.io.File(ARCHIVO);
+            File archivo = new File(ARCHIVO);
             archivo.getParentFile().mkdirs();
 
-            java.io.BufferedWriter writer = new java.io.BufferedWriter(new java.io.FileWriter(archivo));
-
+            BufferedWriter writer = new BufferedWriter(new FileWriter(archivo));
             for (Materia materia : materias) {
                 writer.write(materia.toString());
                 writer.newLine();
             }
-
             writer.close();
-        } catch (java.io.IOException e) {
-            System.out.println("Error al guardar materias: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error al guardar materias: " + e.getMessage());
         }
     }
 

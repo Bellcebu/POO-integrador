@@ -1,6 +1,7 @@
 package view.components;
 
 import view.config.ThemeConfig;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -23,24 +24,12 @@ public class MyLayout {
         JPanel listaPanel = crearLista(elementos, onEditar, onEliminar, onGestionar, textoBoton2, textoBoton3, textoBoton4);
 
         MyScroll scroll = MyScroll.crearVertical(listaPanel);
-
-        // FORZAR TAMAÑO MÍNIMO Y PREFERIDO DEL SCROLL
         scroll.setPreferredSize(new Dimension(900, 400));
         scroll.setMinimumSize(new Dimension(900, 400));
 
         seccionPanel.add(headerPanel, BorderLayout.NORTH);
         seccionPanel.add(scroll, BorderLayout.CENTER);
         return seccionPanel;
-    }
-
-    public static JPanel crearSeccion(String titulo, List<AlumnoVisual> elementos,
-                                      ActionListener onCrear, ActionListener onEditar,
-                                      ActionListener onEliminar, ActionListener onGestionar,
-                                      ActionListener onOrdenar, String textoOrdenar,
-                                      ActionListener onBuscar, String placeholderBusqueda) {
-        return crearSeccion(titulo, elementos, onCrear, onEditar, onEliminar, onGestionar,
-                onOrdenar, textoOrdenar, onBuscar, placeholderBusqueda,
-                "Editar", "Eliminar", "Gestionar");
     }
 
     private static JPanel crearHeader(String titulo, ActionListener onCrear,
@@ -52,46 +41,34 @@ public class MyLayout {
 
         JPanel panelIzquierdo = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 8));
         panelIzquierdo.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-        MyLabel tituloLabel = MyLabel.titulo(titulo);
-        panelIzquierdo.add(tituloLabel);
+        panelIzquierdo.add(MyLabel.titulo(titulo));
 
         JPanel panelCentro = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         panelCentro.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
         if (onBuscar != null && placeholderBusqueda != null) {
-            MyLabel buscarLabel = MyLabel.texto("Buscar:");
-            panelCentro.add(buscarLabel);
+            panelCentro.add(MyLabel.textoBusqueda("Buscar:"));
 
             MyTextField txtBuscar = MyTextField.buscar(placeholderBusqueda);
             txtBuscar.setName("campoBusqueda");
             panelCentro.add(txtBuscar);
 
             MyButton btnBuscar = MyButton.boton4("Buscar", e -> {
-                String textoBusqueda = txtBuscar.getText();
-                ActionEvent evento = new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, textoBusqueda);
-                onBuscar.actionPerformed(evento);
+                String texto = txtBuscar.getText();
+                onBuscar.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, texto));
             });
             panelCentro.add(btnBuscar);
         }
 
         JPanel panelDerecho = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         panelDerecho.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-
-        MyButton btnOrdenar = MyButton.boton8(textoOrdenar, onOrdenar);
-        panelDerecho.add(btnOrdenar);
-
-        MyButton btnCrear = MyButton.boton1("Crear " + titulo.substring(0, titulo.length() - 1), onCrear);
-        panelDerecho.add(btnCrear);
+        panelDerecho.add(MyButton.boton8(textoOrdenar, onOrdenar));
+        panelDerecho.add(MyButton.boton1("Crear " + titulo.substring(0, titulo.length() - 1), onCrear));
 
         headerPanel.add(panelIzquierdo, BorderLayout.WEST);
         headerPanel.add(panelCentro, BorderLayout.CENTER);
         headerPanel.add(panelDerecho, BorderLayout.EAST);
-
         return headerPanel;
-    }
-
-    private static JPanel crearHeader(String titulo, ActionListener onCrear, ActionListener onOrdenar, String textoOrdenar) {
-        return crearHeader(titulo, onCrear, onOrdenar, textoOrdenar, null, null);
     }
 
     private static JPanel crearLista(List<AlumnoVisual> elementos, ActionListener onEditar,
@@ -101,23 +78,17 @@ public class MyLayout {
         listaPanel.setLayout(new BoxLayout(listaPanel, BoxLayout.Y_AXIS));
         listaPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         listaPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 10));
-
-        // ESTABLECER TAMAÑO MÍNIMO PARA EL PANEL DE LISTA
         listaPanel.setPreferredSize(new Dimension(880, 400));
         listaPanel.setMinimumSize(new Dimension(880, 350));
 
         if (elementos == null || elementos.isEmpty()) {
-            // Agregar espacio vertical para mantener el tamaño mínimo
             listaPanel.add(Box.createVerticalStrut(100));
 
-            MyLabel emptyLabel = MyLabel.centrado("No hay elementos registrados");
-            emptyLabel.setFont(new Font("Arial", Font.ITALIC, 14));
+            MyLabel emptyLabel = MyLabel.textoListaVacio("No hay elementos registrados");
             emptyLabel.setBorder(BorderFactory.createEmptyBorder(50, 0, 50, 0));
             listaPanel.add(emptyLabel);
 
-            // Agregar más espacio para mantener tamaño
             listaPanel.add(Box.createVerticalGlue());
-
             return listaPanel;
         }
 
@@ -128,12 +99,9 @@ public class MyLayout {
             listaPanel.add(Box.createVerticalStrut(8));
         }
 
-        // Agregar espacio flexible al final para mantener el tamaño mínimo
         listaPanel.add(Box.createVerticalGlue());
-
         return listaPanel;
     }
-
 
     private static JPanel crearItemLista(AlumnoVisual alumno, ActionListener onEditar,
                                          ActionListener onEliminar, ActionListener onGestionar,
@@ -144,45 +112,34 @@ public class MyLayout {
                 BorderFactory.createLineBorder(ThemeConfig.COLOR_BORDE_LINEA_SUAVE),
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)
         ));
-
-        // ESTABLECER TAMAÑO FIJO PARA CADA ITEM
         itemPanel.setPreferredSize(new Dimension(860, 65));
         itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 65));
         itemPanel.setMinimumSize(new Dimension(860, 65));
 
         JPanel infoPanel = new JPanel(new GridLayout(2, 1));
         infoPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-
-        MyLabel nombreLabel = MyLabel.texto("Nombre: " + alumno.nombre());
-        MyLabel legajoLabel = MyLabel.texto("Legajo: " + alumno.legajo());
-
-        infoPanel.add(nombreLabel);
-        infoPanel.add(legajoLabel);
+        infoPanel.add(MyLabel.textoLista("Nombre: " + alumno.nombre()));
+        infoPanel.add(MyLabel.textoLista("Legajo: " + alumno.legajo()));
 
         JPanel botonesPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
         botonesPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
-        MyButton btnEditar = MyButton.boton2(textoBoton2, e -> {
-            onEditar.actionPerformed(new java.awt.event.ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, alumno.legajo()));
-        });
+        botonesPanel.add(MyButton.boton2(textoBoton2, e ->
+                onEditar.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, alumno.legajo()))
+        ));
 
-        MyButton btnEliminar = MyButton.boton3(textoBoton3, e -> {
-            onEliminar.actionPerformed(new java.awt.event.ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, alumno.legajo()));
-        });
-
-        botonesPanel.add(btnEditar);
-        botonesPanel.add(btnEliminar);
+        botonesPanel.add(MyButton.boton3(textoBoton3, e ->
+                onEliminar.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, alumno.legajo()))
+        ));
 
         if (onGestionar != null) {
-            MyButton btnGestionar = MyButton.boton4(textoBoton4, e -> {
-                onGestionar.actionPerformed(new java.awt.event.ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, alumno.legajo()));
-            });
-            botonesPanel.add(btnGestionar);
+            botonesPanel.add(MyButton.boton4(textoBoton4, e ->
+                    onGestionar.actionPerformed(new ActionEvent(e.getSource(), ActionEvent.ACTION_PERFORMED, alumno.legajo()))
+            ));
         }
 
         itemPanel.add(infoPanel, BorderLayout.WEST);
         itemPanel.add(botonesPanel, BorderLayout.EAST);
-
         return itemPanel;
     }
 

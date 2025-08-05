@@ -1,10 +1,8 @@
 package view.panels;
 
-import model.Alumno;
-import model.Facultad;
-import view.components.MyLayout;
-import view.components.MyLayout.AlumnoVisual;
-import controller.AlumnoController;
+import model.*;
+import view.components.*;
+import controller.*;
 import view.config.ThemeConfig;
 
 import javax.swing.*;
@@ -34,9 +32,9 @@ public class AlumnosPanel extends JPanel {
                 "Alumnos",
                 obtenerAlumnosFiltrados(),
                 e -> crearAlumno(),
-                e -> inscribirAMaterias(e.getActionCommand()), // INSCRIBIR A MATERIAS
-                e -> verMaterias(e.getActionCommand()), // VER MATERIAS
-                e -> mostrarInfo(e.getActionCommand()), // INFO
+                e -> inscribirAMaterias(e.getActionCommand()),
+                e -> verMaterias(e.getActionCommand()),
+                e -> mostrarInfo(e.getActionCommand()),
                 e -> { ordenAZ = !ordenAZ; actualizarLista(); },
                 ordenAZ ? "A→Z" : "Z→A",
                 e -> {
@@ -44,9 +42,9 @@ public class AlumnosPanel extends JPanel {
                     actualizarLista();
                 },
                 "Buscar por nombre o legajo",
-                "Inscribir a Materias",  // Texto botón 2
-                "Ver Materias",          // Texto botón 3
-                "Informacion"                   // Texto botón 4
+                "Inscribir a Materias",
+                "Ver Materias",
+                "Informacion"
         );
 
         add(seccionAlumnos, BorderLayout.CENTER);

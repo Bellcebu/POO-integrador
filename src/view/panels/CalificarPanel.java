@@ -3,7 +3,7 @@ package view.panels;
 import model.*;
 import view.components.*;
 import view.config.ThemeConfig;
-import controller.MateriaController;
+import controller.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -54,30 +54,27 @@ public class CalificarPanel extends JPanel {
     }
 
     private void crearComponentes() {
-        // Título
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         headerPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         headerPanel.add(MyLabel.titulo("Calificar: " + materia.getNombre()));
         add(headerPanel, BorderLayout.NORTH);
 
-        // Panel principal con scroll
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
         if (inscripciones.isEmpty()) {
-            mainPanel.add(Box.createVerticalStrut(50));
-            JPanel emptyPanel = new JPanel(new FlowLayout());
+            JPanel emptyPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
             emptyPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-            emptyPanel.add(MyLabel.info("No hay alumnos inscriptos en esta materia"));
+            emptyPanel.add(MyLabel.textoFormulario("No hay alumnos inscriptos en esta materia"));
             mainPanel.add(emptyPanel);
         } else {
-            // Encabezado de la tabla
             JPanel headerTablePanel = crearHeaderTabla();
             mainPanel.add(headerTablePanel);
             mainPanel.add(Box.createVerticalStrut(10));
 
-            // Filas de alumnos
             for (InscripcionMateria inscripcion : inscripciones) {
                 JPanel filaPanel = crearFilaAlumno(inscripcion);
                 mainPanel.add(filaPanel);
@@ -85,10 +82,11 @@ public class CalificarPanel extends JPanel {
             }
         }
 
+        mainPanel.add(Box.createVerticalGlue());
+
         MyScroll scrollPanel = MyScroll.crearVertical(mainPanel);
         add(scrollPanel, BorderLayout.CENTER);
 
-        // Botones
         JPanel bottomPanel = new JPanel(new FlowLayout());
         bottomPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
@@ -107,11 +105,15 @@ public class CalificarPanel extends JPanel {
         panel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         panel.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
-        panel.add(MyLabel.subtitulo("Alumno"));
-        panel.add(MyLabel.subtitulo("Legajo"));
-        panel.add(MyLabel.subtitulo("Parcial"));
-        panel.add(MyLabel.subtitulo("Final"));
-        panel.add(MyLabel.subtitulo("Promoción"));
+        panel.setPreferredSize(new Dimension(800, 45));
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
+        panel.setMinimumSize(new Dimension(800, 45));
+
+        panel.add(MyLabel.textoFormulario("Alumno"));
+        panel.add(MyLabel.textoFormulario("Legajo"));
+        panel.add(MyLabel.textoFormulario("Parcial"));
+        panel.add(MyLabel.textoFormulario("Final"));
+        panel.add(MyLabel.textoFormulario("Promoción"));
 
         return panel;
     }
@@ -123,14 +125,15 @@ public class CalificarPanel extends JPanel {
                 BorderFactory.createLineBorder(ThemeConfig.COLOR_BORDE_LINEA_SUAVE),
                 BorderFactory.createEmptyBorder(8, 10, 8, 10)
         ));
+        panel.setPreferredSize(new Dimension(800, 50)); // Tamaño fijo
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
+        panel.setMinimumSize(new Dimension(800, 50));
 
         String legajo = inscripcion.getAlumno().getLegajo();
 
-        // Datos del alumno
-        panel.add(MyLabel.texto(inscripcion.getAlumno().getNombre()));
-        panel.add(MyLabel.texto(legajo));
+        panel.add(MyLabel.textoFormulario(inscripcion.getAlumno().getNombre()));
+        panel.add(MyLabel.textoFormulario(legajo));
 
-        // Checkboxes
         JCheckBox cbParcial = new JCheckBox();
         cbParcial.setSelected(inscripcion.aproboParcial());
         cbParcial.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);

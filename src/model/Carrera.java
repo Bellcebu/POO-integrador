@@ -62,7 +62,6 @@ public class Carrera {
     public boolean inscribirAlumno(Alumno alumno) {
         for (Alumno a : alumnos) {
             if (a.equals(alumno)) {
-                System.out.println("Error: El alumno ya está inscripto en esta carrera");
                 return false;
             }
         }
@@ -94,6 +93,12 @@ public class Carrera {
         }
         return obligatoriasAprobadas == totalObligatorias &&
                 optativasAprobadas >= cantidadOptativasNecesarias;
+    }
+    // Método para cargar alumnos desde archivo (sin validaciones)
+    public void cargarAlumno(Alumno alumno) {
+        if (!alumnos.contains(alumno)) {
+            alumnos.add(alumno);
+        }
     }
 
     // toString y fromString
@@ -139,7 +144,31 @@ public class Carrera {
 
                 PlanEstudio plan = crearPlan(tipoPlan);
                 if (plan != null) {
-                    return new Carrera(codigo, nombre, cantidadOptativas, plan);
+                    Carrera carrera = new Carrera(codigo, nombre, cantidadOptativas, plan);
+
+                    if (partes.length >= 5 && !partes[4].trim().isEmpty()) {
+                        String[] codigosMaterias = partes[4].trim().split(",");
+                        for (String codigoMateria : codigosMaterias) {
+                            Materia materia = Materia.buscarPorCodigo(codigoMateria.trim(),
+                                    Facultad.getInstance().getMaterias());
+                            if (materia != null) {
+                                carrera.agregarMateria(materia);
+                            }
+                        }
+                    }
+
+                    if (partes.length >= 6 && !partes[5].trim().isEmpty()) {
+                        String[] legajosAlumnos = partes[5].trim().split(",");
+                        for (String legajo : legajosAlumnos) {
+                            Alumno alumno = Alumno.buscarPorLegajo(legajo.trim(),
+                                    Facultad.getInstance().getAlumnos());
+                            if (alumno != null) {
+                                carrera.cargarAlumno(alumno);
+                            }
+                        }
+                    }
+
+                    return carrera;
                 }
             }
         } catch (Exception e) {

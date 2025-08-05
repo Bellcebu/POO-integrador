@@ -3,7 +3,7 @@ package view.components;
 import view.config.ThemeConfig;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicScrollBarUI;
+import javax.swing.plaf.basic.*;
 import java.awt.*;
 
 public class MyScroll extends JScrollPane {
@@ -21,8 +21,6 @@ public class MyScroll extends JScrollPane {
     private void configurarScroll() {
         setBorder(BorderFactory.createEmptyBorder());
         getVerticalScrollBar().setUnitIncrement(16);
-
-
 
         JScrollBar verticalScrollBar = getVerticalScrollBar();
         JScrollBar horizontalScrollBar = getHorizontalScrollBar();
@@ -70,7 +68,7 @@ public class MyScroll extends JScrollPane {
         protected void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
             Graphics2D g2 = (Graphics2D) g.create();
             g2.setPaint(trackColor);
-            g2.fillRect(trackBounds.x, trackBounds.y, trackBounds.width, trackBounds.height); // SIN redondear
+            g2.fillRect(trackBounds.x, trackBounds.y, trackBounds.width, trackBounds.height);
             g2.dispose();
         }
 
@@ -83,7 +81,7 @@ public class MyScroll extends JScrollPane {
             int padding = 2;
             g2.fillRoundRect(thumbBounds.x + padding, thumbBounds.y + padding,
                     thumbBounds.width - padding * 2, thumbBounds.height - padding * 2,
-                    6, 6); // ARC más pequeño
+                    6, 6);
             g2.dispose();
         }
     }

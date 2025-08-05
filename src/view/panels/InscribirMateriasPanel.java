@@ -1,17 +1,14 @@
 package view.panels;
 
 import model.*;
-import controller.AlumnoController;
+import controller.*;
 import view.components.*;
-import view.config.ThemeConfig;
-
+import view.config.*;
+import java.util.List;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.event.*;
+import java.util.*;
 
 public class InscribirMateriasPanel extends JPanel {
 
@@ -19,7 +16,7 @@ public class InscribirMateriasPanel extends JPanel {
     private AlumnoController alumnoController;
     private JComboBox<String> cmbCarreras;
     private JPanel listaPanelMaterias;
-    private Map<String, JCheckBox> checkboxesMaterias; // Mapa código -> checkbox
+    private Map<String, JCheckBox> checkboxesMaterias;
     private MyButton btnCargar;
     private MyButton btnInscribir;
     private MyButton btnCancelar;
@@ -51,18 +48,15 @@ public class InscribirMateriasPanel extends JPanel {
     }
 
     private void crearComponentes() {
-        // ComboBox carreras
         cmbCarreras = new JComboBox<>();
-        cmbCarreras.setFont(new Font("Arial", Font.PLAIN, 12));
+        cmbCarreras.setFont(new Font("Arial", Font.PLAIN, 18));
         cmbCarreras.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         cmbCarreras.setForeground(ThemeConfig.COLOR_TEXTO);
 
-        // Panel para lista de materias
         listaPanelMaterias = new JPanel();
         listaPanelMaterias.setLayout(new BoxLayout(listaPanelMaterias, BoxLayout.Y_AXIS));
         listaPanelMaterias.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
-        // Botones
         btnCargar = MyButton.boton5("Cargar Materias", e -> cargarMaterias());
         btnInscribir = MyButton.boton6("Inscribir", onInscribir);
         btnCancelar = MyButton.boton7("Cancelar", onCancelar);
@@ -71,26 +65,22 @@ public class InscribirMateriasPanel extends JPanel {
     private void configurarLayout() {
         setLayout(new BorderLayout());
 
-        // Título
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         headerPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-        headerPanel.add(MyLabel.titulo("Inscribir a Materias: " + alumno.getNombre()));
+        headerPanel.add(MyLabel.textoFormulario("Inscribir a Materias: " + alumno.getNombre()));
         add(headerPanel, BorderLayout.NORTH);
 
-        // Panel central
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
-        // Panel filtro carrera
         JPanel filtroPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         filtroPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-        filtroPanel.add(MyLabel.texto("Seleccionar carrera:"));
+        filtroPanel.add(MyLabel.textoFormulario("Seleccionar carrera:"));
         filtroPanel.add(cmbCarreras);
         filtroPanel.add(btnCargar);
         centerPanel.add(filtroPanel, BorderLayout.NORTH);
 
-        // Panel materias
         JPanel materiasPanel = new JPanel(new BorderLayout());
         materiasPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         materiasPanel.setBorder(BorderFactory.createEmptyBorder(15, 0, 0, 0));
@@ -104,7 +94,6 @@ public class InscribirMateriasPanel extends JPanel {
         centerPanel.add(materiasPanel, BorderLayout.CENTER);
         add(centerPanel, BorderLayout.CENTER);
 
-        // Botones
         JPanel bottomPanel = new JPanel(new FlowLayout());
         bottomPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         bottomPanel.add(btnInscribir);
@@ -167,13 +156,11 @@ public class InscribirMateriasPanel extends JPanel {
         ));
         itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
 
-        // Checkbox
         JCheckBox checkbox = new JCheckBox();
         checkbox.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         checkbox.setForeground(ThemeConfig.COLOR_TEXTO);
         checkboxesMaterias.put(materia.getCodigo(), checkbox);
 
-        // Información de la materia
         JPanel infoPanel = new JPanel(new GridLayout(2, 1));
         infoPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 

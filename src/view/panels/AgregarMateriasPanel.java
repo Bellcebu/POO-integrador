@@ -1,23 +1,19 @@
 package view.panels;
 
-import model.Materia;
-import model.Carrera;
-import model.Facultad;
+import model.*;
 import view.components.*;
 import view.config.ThemeConfig;
+import java.util.List;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class AgregarMateriasPanel extends JPanel {
 
     private JPanel listaPanelMaterias;
-    private Map<String, JCheckBox> checkboxesMaterias; // Mapa código -> checkbox
+    private Map<String, JCheckBox> checkboxesMaterias;
     private MyButton btnAgregar;
     private MyButton btnCancelar;
     private Carrera carrera;
@@ -57,13 +53,11 @@ public class AgregarMateriasPanel extends JPanel {
     private void configurarLayout() {
         setLayout(new BorderLayout());
 
-        // Título
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         headerPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-        headerPanel.add(MyLabel.titulo("Agregar Materias a: " + carrera.getNombre()));
+        headerPanel.add(MyLabel.textoFormulario("Agregar Materias a: " + carrera.getNombre()));
         add(headerPanel, BorderLayout.NORTH);
 
-        // Panel central con scroll
         JPanel centerPanel = new JPanel(new BorderLayout());
         centerPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         centerPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -76,7 +70,6 @@ public class AgregarMateriasPanel extends JPanel {
 
         add(centerPanel, BorderLayout.CENTER);
 
-        // Botones
         JPanel bottomPanel = new JPanel(new FlowLayout());
         bottomPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         bottomPanel.add(btnAgregar);
@@ -91,7 +84,6 @@ public class AgregarMateriasPanel extends JPanel {
         checkboxesMaterias.clear();
         listaPanelMaterias.removeAll();
 
-        // Solo mostrar materias que NO están ya en la carrera
         for (Materia materia : todasLasMaterias) {
             if (!materiasCarrera.contains(materia)) {
                 JPanel itemPanel = crearItemMateria(materia);
@@ -100,7 +92,6 @@ public class AgregarMateriasPanel extends JPanel {
             }
         }
 
-        // Si no hay materias disponibles
         if (checkboxesMaterias.isEmpty()) {
             JPanel emptyPanel = new JPanel(new FlowLayout());
             emptyPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
@@ -121,13 +112,11 @@ public class AgregarMateriasPanel extends JPanel {
         ));
         itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
 
-        // Checkbox
         JCheckBox checkbox = new JCheckBox();
         checkbox.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         checkbox.setForeground(ThemeConfig.COLOR_TEXTO);
         checkboxesMaterias.put(materia.getCodigo(), checkbox);
 
-        // Información de la materia
         JPanel infoPanel = new JPanel(new GridLayout(2, 1));
         infoPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
@@ -135,7 +124,7 @@ public class AgregarMateriasPanel extends JPanel {
         String correlativasTexto = materia.getCorrelativas().isEmpty() ? "Sin correlativas" :
                 materia.getCorrelativas().size() + " correlativas";
 
-        MyLabel nombreLabel = MyLabel.texto(materia.getNombre() + " (" + materia.getCodigo() + ")");
+        MyLabel nombreLabel = MyLabel.textoFormulario(materia.getNombre() + " (" + materia.getCodigo() + ")");
         MyLabel detallesLabel = MyLabel.info("Cuatrimestre: " + materia.getCuatrimestre() +
                 " | " + tipoTexto + " | " + correlativasTexto);
 

@@ -1,11 +1,11 @@
 package view.panels;
 
 import view.components.*;
-import view.config.ThemeConfig;
+import view.config.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class MateriaFormPanel extends JPanel {
 
@@ -48,7 +48,6 @@ public class MateriaFormPanel extends JPanel {
         txtCuatrimestre = new JTextField(10);
         configurarTextField(txtCuatrimestre);
 
-        // Radio buttons para obligatoria/optativa
         rbObligatoria = new JRadioButton("Obligatoria");
         rbOptativa = new JRadioButton("Optativa");
         configurarRadioButton(rbObligatoria);
@@ -57,7 +56,7 @@ public class MateriaFormPanel extends JPanel {
         ButtonGroup grupoObligatoria = new ButtonGroup();
         grupoObligatoria.add(rbObligatoria);
         grupoObligatoria.add(rbOptativa);
-        rbObligatoria.setSelected(true); // Por defecto obligatoria
+        rbObligatoria.setSelected(true);
 
         btnGuardar = MyButton.boton6("Guardar", onGuardar);
         btnCancelar = MyButton.boton7("Cancelar", onCancelar);
@@ -84,20 +83,16 @@ public class MateriaFormPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 5, 10, 5);
 
-        // Título
         gbc.gridx = 0; gbc.gridy = 0;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
         add(MyLabel.titulo("Nueva Materia"), gbc);
 
-        // Información explicativa
         gbc.gridx = 0; gbc.gridy = 1;
         gbc.gridwidth = 2;
         gbc.anchor = GridBagConstraints.CENTER;
-        MyLabel infoLabel = MyLabel.info("La materia se asignará a carreras desde el panel de cada carrera");
-        add(infoLabel, gbc);
+        add(MyLabel.info("La materia se asignará a carreras desde el panel de cada carrera"), gbc);
 
-        // Código
         gbc.gridx = 0; gbc.gridy = 2;
         gbc.gridwidth = 1;
         gbc.anchor = GridBagConstraints.EAST;
@@ -108,7 +103,6 @@ public class MateriaFormPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(txtCodigo, gbc);
 
-        // Nombre
         gbc.gridx = 0; gbc.gridy = 3;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
@@ -119,7 +113,6 @@ public class MateriaFormPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(txtNombre, gbc);
 
-        // Cuatrimestre
         gbc.gridx = 0; gbc.gridy = 4;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
@@ -130,7 +123,6 @@ public class MateriaFormPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(txtCuatrimestre, gbc);
 
-        // Tipo (Obligatoria/Optativa)
         gbc.gridx = 0; gbc.gridy = 5;
         gbc.anchor = GridBagConstraints.EAST;
         gbc.fill = GridBagConstraints.NONE;
@@ -146,7 +138,6 @@ public class MateriaFormPanel extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(panelTipo, gbc);
 
-        // Botones
         JPanel panelBotones = new JPanel(new FlowLayout());
         panelBotones.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         panelBotones.add(btnGuardar);
@@ -159,7 +150,6 @@ public class MateriaFormPanel extends JPanel {
         add(panelBotones, gbc);
     }
 
-    // Getters - SIN getCodigoCarrera()
     public String getCodigo() {
         return txtCodigo.getText().trim();
     }

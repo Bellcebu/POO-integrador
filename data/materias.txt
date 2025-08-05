@@ -1,4 +1,3 @@
-MAT01☆Mate1☆1☆true☆
-MAT02☆Mate2☆2☆true☆
-PRO1☆Programcion1☆2☆true☆PRO2
-PRO2☆Programcion2☆3☆true☆
+MAT1☆matematicas☆1☆true☆
+MAT2☆matematicas☆2☆true☆
+MAT3☆matematicas☆3☆true☆

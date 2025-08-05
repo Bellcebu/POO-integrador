@@ -1,7 +1,7 @@
 package view.panels;
 
 import model.*;
-import controller.AlumnoController;
+import controller.*;
 import view.components.*;
 import view.config.ThemeConfig;
 
@@ -37,46 +37,27 @@ public class InfoAlumnoPanel extends JPanel {
     }
 
     private void crearComponentes() {
-        // Panel principal con scroll
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
-        // Título
         JPanel headerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         headerPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         headerPanel.add(MyLabel.titulo("Información del Alumno"));
         mainPanel.add(headerPanel);
 
         mainPanel.add(Box.createVerticalStrut(20));
-
-        // Información básica
-        JPanel infoBasicaPanel = crearSeccionInfo("Datos Básicos", crearInfoBasica());
-        mainPanel.add(infoBasicaPanel);
-
+        mainPanel.add(crearSeccionInfo("Datos Básicos", crearInfoBasica()));
         mainPanel.add(Box.createVerticalStrut(15));
-
-        // Carreras
-        JPanel carrerasPanel = crearSeccionInfo("Carreras", crearInfoCarreras());
-        mainPanel.add(carrerasPanel);
-
+        mainPanel.add(crearSeccionInfo("Carreras", crearInfoCarreras()));
         mainPanel.add(Box.createVerticalStrut(15));
-
-        // Estadísticas académicas
-        JPanel estadisticasPanel = crearSeccionInfo("Resumen Académico", crearEstadisticas());
-        mainPanel.add(estadisticasPanel);
-
+        mainPanel.add(crearSeccionInfo("Resumen Académico", crearEstadisticas()));
         mainPanel.add(Box.createVerticalStrut(15));
+        mainPanel.add(crearSeccionInfo("Progreso por Carrera", crearProgresoCarreras()));
 
-        // Progreso por carrera
-        JPanel progresoPanel = crearSeccionInfo("Progreso por Carrera", crearProgresoCarreras());
-        mainPanel.add(progresoPanel);
-
-        // Scroll para todo el contenido
         MyScroll scrollPanel = MyScroll.crearVertical(mainPanel);
         add(scrollPanel, BorderLayout.CENTER);
 
-        // Botón volver
         JPanel bottomPanel = new JPanel(new FlowLayout());
         bottomPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         btnVolver = MyButton.boton7("Volver", onVolver);
@@ -92,13 +73,10 @@ public class InfoAlumnoPanel extends JPanel {
                 BorderFactory.createEmptyBorder(10, 15, 10, 15)
         ));
 
-        // Título de la sección
         JPanel headerSeccion = new JPanel(new FlowLayout(FlowLayout.LEFT));
         headerSeccion.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         headerSeccion.add(MyLabel.subtitulo(titulo));
         seccion.add(headerSeccion, BorderLayout.NORTH);
-
-        // Contenido
         seccion.add(contenido, BorderLayout.CENTER);
 
         return seccion;
@@ -107,10 +85,8 @@ public class InfoAlumnoPanel extends JPanel {
     private JPanel crearInfoBasica() {
         JPanel panel = new JPanel(new GridLayout(2, 1, 5, 5));
         panel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-
-        panel.add(MyLabel.texto("Nombre: " + alumno.getNombre()));
-        panel.add(MyLabel.texto("Legajo: " + alumno.getLegajo()));
-
+        panel.add(MyLabel.textoFormulario("Nombre: " + alumno.getNombre()));
+        panel.add(MyLabel.textoFormulario("Legajo: " + alumno.getLegajo()));
         return panel;
     }
 
@@ -127,11 +103,10 @@ public class InfoAlumnoPanel extends JPanel {
             for (Carrera carrera : carreras) {
                 JPanel carreraPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
                 carreraPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-                carreraPanel.add(MyLabel.texto("• " + carrera.getNombre() + " (" + carrera.getCodigo() + ")"));
+                carreraPanel.add(MyLabel.textoFormulario("• " + carrera.getNombre() + " (" + carrera.getCodigo() + ")"));
                 panel.add(carreraPanel);
             }
         }
-
         return panel;
     }
 
@@ -141,7 +116,6 @@ public class InfoAlumnoPanel extends JPanel {
         JPanel panel = new JPanel(new GridLayout(2, 3, 10, 10));
         panel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
-        // Cajas de estadísticas
         panel.add(crearCajaEstadistica("Total Materias", stats.get("total"), ThemeConfig.COLOR_ACTUALIZAR));
         panel.add(crearCajaEstadistica("Aprobadas", stats.get("aprobadas"), ThemeConfig.COLOR_CREAR));
         panel.add(crearCajaEstadistica("En Curso", stats.get("curso"), ThemeConfig.COLOR_ELIMINAR));
@@ -160,7 +134,7 @@ public class InfoAlumnoPanel extends JPanel {
 
         MyLabel labelTitulo = new MyLabel(titulo, SwingConstants.CENTER);
         labelTitulo.setForeground(Color.WHITE);
-        labelTitulo.setFont(new Font("Arial", Font.BOLD, 10));
+        labelTitulo.setFont(new Font("Arial", Font.BOLD, 18));
 
         MyLabel labelValor = new MyLabel(String.valueOf(valor), SwingConstants.CENTER);
         labelValor.setForeground(Color.WHITE);
@@ -188,7 +162,6 @@ public class InfoAlumnoPanel extends JPanel {
                 panel.add(Box.createVerticalStrut(10));
             }
         }
-
         return panel;
     }
 
@@ -200,20 +173,15 @@ public class InfoAlumnoPanel extends JPanel {
                 BorderFactory.createEmptyBorder(10, 10, 10, 10)
         ));
 
-        // Título de la carrera
         MyLabel labelCarrera = MyLabel.texto(carrera.getNombre());
-        labelCarrera.setFont(new Font("Arial", Font.BOLD, 12));
+        labelCarrera.setFont(new Font("Arial", Font.BOLD, 18));
         panel.add(labelCarrera, BorderLayout.NORTH);
 
-        // Progreso
         JPanel progresoPanel = new JPanel(new GridLayout(1, 2, 10, 5));
         progresoPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
-        // Materias obligatorias
         int obligatoriasTotal = 0;
         int obligatoriasAprobadas = 0;
-
-        // Materias optativas
         int optativasAprobadas = 0;
         int optativasNecesarias = carrera.getCantidadOptativasNecesarias();
 
@@ -221,13 +189,9 @@ public class InfoAlumnoPanel extends JPanel {
             if (alumno.estaInscriptoEn(materia)) {
                 if (materia.esObligatoria()) {
                     obligatoriasTotal++;
-                    if (alumno.aproboMateria(materia)) {
-                        obligatoriasAprobadas++;
-                    }
+                    if (alumno.aproboMateria(materia)) obligatoriasAprobadas++;
                 } else {
-                    if (alumno.aproboMateria(materia)) {
-                        optativasAprobadas++;
-                    }
+                    if (alumno.aproboMateria(materia)) optativasAprobadas++;
                 }
             } else if (materia.esObligatoria()) {
                 obligatoriasTotal++;
@@ -237,17 +201,16 @@ public class InfoAlumnoPanel extends JPanel {
         String textoObligatorias = "Obligatorias: " + obligatoriasAprobadas + "/" + obligatoriasTotal;
         String textoOptativas = "Optativas: " + optativasAprobadas + "/" + optativasNecesarias;
 
-        progresoPanel.add(MyLabel.texto(textoObligatorias));
-        progresoPanel.add(MyLabel.texto(textoOptativas));
+        progresoPanel.add(MyLabel.textoFormulario(textoObligatorias));
+        progresoPanel.add(MyLabel.textoFormulario(textoOptativas));
 
         panel.add(progresoPanel, BorderLayout.CENTER);
 
-        // Estado de finalización
         boolean finalizoCarrera = carrera.finalizoCarrera(alumno);
         MyLabel labelEstado = MyLabel.info(finalizoCarrera ? "CARRERA FINALIZADA" : "En progreso");
         if (finalizoCarrera) {
             labelEstado.setForeground(ThemeConfig.COLOR_CREAR);
-            labelEstado.setFont(new Font("Arial", Font.BOLD, 11));
+            labelEstado.setFont(new Font("Arial", Font.BOLD, 18));
         }
         panel.add(labelEstado, BorderLayout.SOUTH);
 

@@ -1,11 +1,8 @@
 package view;
 
-import view.components.MyFrame;
-import view.components.SidebarNavbar;
-import view.panels.AlumnosPanel;
-import view.panels.MateriasPanel;
-import view.panels.CarrerasPanel;
+import view.components.*;
 import view.config.ThemeConfig;
+import view.panels.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,30 +14,25 @@ public class Interfaz {
     private SidebarNavbar sidebar;
 
     public Interfaz() {
-        // IMPORTANTE: Aplicar el tema antes de crear los componentes
         ThemeConfig.aplicarTema();
 
-        // Crear la interfaz en el hilo de eventos de Swing
         SwingUtilities.invokeLater(() -> {
             inicializarComponentes();
             configurarLayout();
-            mostrarAlumnos(); // Panel inicial
+            mostrarAlumnos();
             frame.setVisible(true);
         });
     }
 
     private void inicializarComponentes() {
         frame = new MyFrame();
-
-        // Crear sidebar con los listeners, incluyendo callback para cambio de tema
         sidebar = new SidebarNavbar(
                 e -> mostrarAlumnos(),
                 e -> mostrarMaterias(),
                 e -> mostrarCarreras(),
-                e -> refrescarTodaLaInterfaz() // Callback para cambio de tema
+                e -> refrescarTodaLaInterfaz()
         );
 
-        // Panel principal para el contenido
         contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
     }
@@ -49,8 +41,6 @@ public class Interfaz {
         frame.setLayout(new BorderLayout());
         frame.add(sidebar, BorderLayout.WEST);
         frame.add(contentPanel, BorderLayout.CENTER);
-
-        // Aplicar el color de fondo al frame
         frame.getContentPane().setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
     }
 
@@ -73,13 +63,10 @@ public class Interfaz {
         contentPanel.repaint();
     }
 
-    // Método para refrescar toda la interfaz cuando cambia el tema
     private void refrescarTodaLaInterfaz() {
-        // Actualizar colores del frame principal
         frame.getContentPane().setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         contentPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
 
-        // Recrear el panel actual para aplicar los nuevos colores
         if (contentPanel.getComponentCount() > 0) {
             Component currentPanel = contentPanel.getComponent(0);
             if (currentPanel instanceof AlumnosPanel) {
@@ -91,11 +78,9 @@ public class Interfaz {
             }
         }
 
-        // Repintar todo
         frame.repaint();
     }
 
-    // Método público para cambiar entre modo claro y oscuro (ahora redundante pero útil)
     public void toggleTema() {
         ThemeConfig.modoOscuro = !ThemeConfig.modoOscuro;
         ThemeConfig.aplicarTema();
