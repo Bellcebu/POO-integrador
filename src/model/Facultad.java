@@ -14,7 +14,6 @@ public class Facultad {
     private AlumnoController alumnoController;
     private MateriaController materiaController;
 
-    // Patrón singleton
     private Facultad() {
         this.carreras = new ArrayList<>();
         this.alumnos = new ArrayList<>();
@@ -33,9 +32,9 @@ public class Facultad {
         cargarAlumnos();
         cargarMaterias();
         cargarCarreras();
-        asociarMateriasACarreras(); // Ahora solo asocia las materias explícitamente listadas
+        asociarMateriasACarreras();
         asociarAlumnosACarreras();
-        asociarCorrelativasAMaterias(); // NUEVO: Cargar correlativas después de tener todas las materias
+        asociarCorrelativasAMaterias();
         cargarInscripciones();
     }
 
@@ -96,7 +95,6 @@ public class Facultad {
         }
     }
 
-    // MÉTODO ACTUALIZADO - Ya no asocia materias automáticamente por código de carrera
     private void asociarMateriasACarreras() {
         try {
             java.util.List<String> lineas = java.nio.file.Files.readAllLines(
@@ -108,7 +106,6 @@ public class Facultad {
                     String[] codigosMaterias = Carrera.getCodigosMaterias(linea);
                     Carrera carrera = carreras.get(i);
 
-                    // Agregar materias específicamente listadas en el archivo de carrera
                     for (String codigoMateria : codigosMaterias) {
                         if (!codigoMateria.trim().isEmpty()) {
                             for (Materia materia : materias) {
@@ -158,7 +155,6 @@ public class Facultad {
         }
     }
 
-    // NUEVO MÉTODO: Asociar correlativas después de cargar todas las materias
     private void asociarCorrelativasAMaterias() {
         try {
             java.util.List<String> lineas = java.nio.file.Files.readAllLines(
@@ -225,18 +221,6 @@ public class Facultad {
         }
     }
 
-    // Métodos para editar
-    public boolean editarAlumno(String legajoViejo, Alumno nuevoAlumno) {
-        for (int i = 0; i < alumnos.size(); i++) {
-            if (alumnos.get(i).getLegajo().equals(legajoViejo)) {
-                alumnos.set(i, nuevoAlumno);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Getters
     public List<Carrera> getCarreras() {
         return carreras;
     }

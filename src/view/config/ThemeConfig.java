@@ -5,6 +5,7 @@ import java.awt.Color;
 public class ThemeConfig {
 
     public static boolean modoOscuro = true;
+    public static int tamanoFuente = 18;
 
     public static Color COLOR_CREAR;
     public static Color COLOR_EDITAR;
@@ -26,6 +27,12 @@ public class ThemeConfig {
 
     public static Color COLOR_SECCIONPANEL_BACKGROUND;
     public static Color COLOR_BORDE_LINEA_SUAVE;
+
+    public static Color COLOR_ITEM_SELECCIONADO;
+    public static Color COLOR_ITEM_NO_SELECCIONADO;
+
+    public static Color COLOR_CHECKBOX_BACKGROUND;
+    public static Color COLOR_CHECKBOX_CHECKED;
 
     public static void aplicarTema() {
         if (modoOscuro) {
@@ -50,6 +57,12 @@ public class ThemeConfig {
             COLOR_SECCIONPANEL_BACKGROUND = new Color(70, 55, 50);
             COLOR_BORDE_LINEA_SUAVE = new Color(99, 72, 50);
 
+            COLOR_ITEM_NO_SELECCIONADO = new Color(70, 55, 50);
+            COLOR_ITEM_SELECCIONADO = new Color(111, 78, 55);
+
+            COLOR_CHECKBOX_BACKGROUND = new Color(99, 72, 50);
+            COLOR_CHECKBOX_CHECKED = new Color(171, 135, 108);
+
         } else {
             COLOR_CREAR = new Color(72, 133, 237);
             COLOR_EDITAR = new Color(38, 166, 154);
@@ -71,6 +84,21 @@ public class ThemeConfig {
 
             COLOR_SECCIONPANEL_BACKGROUND = new Color(255, 255, 255);
             COLOR_BORDE_LINEA_SUAVE = new Color(224, 224, 224);
+
+            COLOR_ITEM_NO_SELECCIONADO = new Color(255, 255, 255);
+            COLOR_ITEM_SELECCIONADO = new Color(230, 240, 255);
+
+            COLOR_CHECKBOX_BACKGROUND = new Color(224, 224, 224);
+            COLOR_CHECKBOX_CHECKED = new Color(72, 133, 237);
+        }
+    }
+
+    public static void cambiarTamanoFuente() {
+        switch (tamanoFuente) {
+            case 14: tamanoFuente = 18; break;
+            case 18: tamanoFuente = 24; break;
+            case 24: tamanoFuente = 14; break;
+            default: tamanoFuente = 18; break;
         }
     }
 }

@@ -17,9 +17,9 @@ public class CalificarPanel extends JPanel {
     private Materia materia;
     private MateriaController materiaController;
     private List<InscripcionMateria> inscripciones;
-    private Map<String, JCheckBox> checkboxesParcial;
-    private Map<String, JCheckBox> checkboxesFinal;
-    private Map<String, JCheckBox> checkboxesPromocion;
+    private Map<String, MyCheckBox> checkboxesParcial;
+    private Map<String, MyCheckBox> checkboxesFinal;
+    private Map<String, MyCheckBox> checkboxesPromocion;
     private MyButton btnGuardar;
     private MyButton btnCancelar;
     private ActionListener onGuardar;
@@ -125,7 +125,7 @@ public class CalificarPanel extends JPanel {
                 BorderFactory.createLineBorder(ThemeConfig.COLOR_BORDE_LINEA_SUAVE),
                 BorderFactory.createEmptyBorder(8, 10, 8, 10)
         ));
-        panel.setPreferredSize(new Dimension(800, 50)); // Tamaño fijo
+        panel.setPreferredSize(new Dimension(800, 50));
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         panel.setMinimumSize(new Dimension(800, 50));
 
@@ -134,24 +134,30 @@ public class CalificarPanel extends JPanel {
         panel.add(MyLabel.textoFormulario(inscripcion.getAlumno().getNombre()));
         panel.add(MyLabel.textoFormulario(legajo));
 
-        JCheckBox cbParcial = new JCheckBox();
-        cbParcial.setSelected(inscripcion.aproboParcial());
-        cbParcial.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        MyCheckBox cbParcial = new MyCheckBox(inscripcion.aproboParcial());
         checkboxesParcial.put(legajo, cbParcial);
 
-        JCheckBox cbFinal = new JCheckBox();
-        cbFinal.setSelected(inscripcion.aproboFinal());
-        cbFinal.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        MyCheckBox cbFinal = new MyCheckBox(inscripcion.aproboFinal());
         checkboxesFinal.put(legajo, cbFinal);
 
-        JCheckBox cbPromocion = new JCheckBox();
-        cbPromocion.setSelected(inscripcion.promociono());
-        cbPromocion.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        MyCheckBox cbPromocion = new MyCheckBox(inscripcion.promociono());
         checkboxesPromocion.put(legajo, cbPromocion);
 
-        panel.add(cbParcial);
-        panel.add(cbFinal);
-        panel.add(cbPromocion);
+        JPanel panelParcial = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panelParcial.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        panelParcial.add(cbParcial);
+
+        JPanel panelFinal = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panelFinal.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        panelFinal.add(cbFinal);
+
+        JPanel panelPromocion = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panelPromocion.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        panelPromocion.add(cbPromocion);
+
+        panel.add(panelParcial);
+        panel.add(panelFinal);
+        panel.add(panelPromocion);
 
         return panel;
     }

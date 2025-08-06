@@ -14,7 +14,6 @@ public class Alumno {
         this.inscripciones = new HashMap<>();
     }
 
-    // Get y Set
     public String getNombre() {
         return nombre;
     }
@@ -25,7 +24,6 @@ public class Alumno {
         return inscripciones;
     }
     public InscripcionMateria getInscripcion(Materia materia) {
-        // Buscar por código, no por referencia
         for (Map.Entry<Materia, InscripcionMateria> entry : inscripciones.entrySet()) {
             if (entry.getKey().getCodigo().equals(materia.getCodigo())) {
                 return entry.getValue();
@@ -34,14 +32,11 @@ public class Alumno {
         return null;
     }
 
-    // NUEVO: Agregar inscripción
     public void agregarInscripcion(Materia materia, InscripcionMateria inscripcion) {
         inscripciones.put(materia, inscripcion);
     }
 
-    // NUEVO: Verificar si está inscripto en una materia
     public boolean estaInscriptoEn(Materia materia) {
-        // Buscar por código, no por referencia
         for (Materia m : inscripciones.keySet()) {
             if (m.getCodigo().equals(materia.getCodigo())) {
                 return true;
@@ -59,7 +54,6 @@ public class Alumno {
         return null;
     }
 
-    // NUEVO: Obtener materias por estado
     public List<Materia> getMateriasAprobadas() {
         List<Materia> aprobadas = new ArrayList<>();
         for (Map.Entry<Materia, InscripcionMateria> entry : inscripciones.entrySet()) {
@@ -70,7 +64,6 @@ public class Alumno {
         return aprobadas;
     }
 
-    // NUEVO: Obtener materias con cursada aprobada
     public List<Materia> getMateriasCursadasAprobadas() {
         List<Materia> cursadas = new ArrayList<>();
         for (Map.Entry<Materia, InscripcionMateria> entry : inscripciones.entrySet()) {
@@ -82,7 +75,6 @@ public class Alumno {
     }
 
     public boolean aproboCursada(Materia materia) {
-        // Buscar por código, no por referencia
         for (Map.Entry<Materia, InscripcionMateria> entry : inscripciones.entrySet()) {
             if (entry.getKey().getCodigo().equals(materia.getCodigo())) {
                 return entry.getValue().aproboParcial();
@@ -91,22 +83,17 @@ public class Alumno {
         return false;
     }
 
-    // CORREGIDO: Ahora considera promoción también
     public boolean aproboFinal(Materia materia) {
-        // Buscar por código, no por referencia
         for (Map.Entry<Materia, InscripcionMateria> entry : inscripciones.entrySet()) {
             if (entry.getKey().getCodigo().equals(materia.getCodigo())) {
                 InscripcionMateria insc = entry.getValue();
-                // Si promocionó O aprobó final, cuenta como "final aprobado"
                 return insc.aproboFinal() || insc.promociono();
             }
         }
         return false;
     }
 
-    // NUEVO: Aprobar materia (final o promoción)
     public boolean aproboMateria(Materia materia) {
-        // Buscar por código, no por referencia
         for (Map.Entry<Materia, InscripcionMateria> entry : inscripciones.entrySet()) {
             if (entry.getKey().getCodigo().equals(materia.getCodigo())) {
                 return entry.getValue().aproboMateria();
@@ -115,7 +102,6 @@ public class Alumno {
         return false;
     }
 
-    //manejo de duplicidad
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -129,7 +115,6 @@ public class Alumno {
         return Objects.hash(legajo);
     }
 
-    //To string y fromstring de (Alumno)
     @Override
     public String toString() {
         return nombre + SEPARADOR + legajo;
@@ -149,12 +134,10 @@ public class Alumno {
         return null;
     }
 
-    //mostrar en terminal
     public String mostrarInfo() {
         return nombre + " (" + legajo + ")";
     }
 
-    // NUEVO: Mostrar información detallada
     public String mostrarInfoDetallada() {
         StringBuilder sb = new StringBuilder();
         sb.append("Alumno: ").append(mostrarInfo()).append("\n");

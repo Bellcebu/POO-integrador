@@ -21,7 +21,6 @@ public class Carrera {
         this.alumnos = new ArrayList<>();
     }
 
-    //get y set
     public String getCodigo() { return codigo; }
     public String getNombre() { return nombre; }
     public int getCantidadOptativasNecesarias() { return cantidadOptativasNecesarias; }
@@ -54,7 +53,6 @@ public class Carrera {
         return planEstudio.getClass().getSimpleName().toUpperCase();
     }
 
-    // funciones add
     public void agregarMateria(Materia materia) {
         materias.add(materia);
     }
@@ -94,14 +92,13 @@ public class Carrera {
         return obligatoriasAprobadas == totalObligatorias &&
                 optativasAprobadas >= cantidadOptativasNecesarias;
     }
-    // Método para cargar alumnos desde archivo (sin validaciones)
+
     public void cargarAlumno(Alumno alumno) {
         if (!alumnos.contains(alumno)) {
             alumnos.add(alumno);
         }
     }
 
-    // toString y fromString
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -190,7 +187,6 @@ public class Carrera {
         }
     }
 
-    //mostrar en terminal
     public String mostrarInfo() {
         return nombre + " (" + codigo + ")";
     }

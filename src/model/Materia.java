@@ -19,7 +19,6 @@ public class Materia {
         this.correlativas = new HashSet<>();
     }
 
-    //get y set
     public String getCodigo() {
         return codigo;
     }
@@ -52,7 +51,6 @@ public class Materia {
         correlativas.add(m);
     }
 
-    //toString y fromString MODIFICADOS - SIN codigoCarrera
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -100,7 +98,6 @@ public class Materia {
         return null;
     }
 
-    //mostrar en terminal
     public String mostrarInfo() {
         return nombre + " (" + codigo + ")";
     }

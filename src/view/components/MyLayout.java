@@ -78,8 +78,6 @@ public class MyLayout {
         listaPanel.setLayout(new BoxLayout(listaPanel, BoxLayout.Y_AXIS));
         listaPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         listaPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 10));
-        listaPanel.setPreferredSize(new Dimension(880, 400));
-        listaPanel.setMinimumSize(new Dimension(880, 350));
 
         if (elementos == null || elementos.isEmpty()) {
             listaPanel.add(Box.createVerticalStrut(100));

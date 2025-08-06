@@ -8,12 +8,15 @@ public class PlanD implements PlanEstudio {
                 return false;
             }
         }
+
         int cuatrimestreMateria = materia.getCuatrimestre();
         for (InscripcionMateria inscripcion : alumno.getInscripciones().values()) {
             Materia m = inscripcion.getMateria();
             if (m.getCuatrimestre() <= cuatrimestreMateria - 3) {
-                if (!alumno.aproboFinal(m)) {
-                    return false;
+                if (!materia.getCorrelativas().contains(m)) {
+                    if (!alumno.aproboFinal(m)) {
+                        return false;
+                    }
                 }
             }
         }

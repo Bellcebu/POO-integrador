@@ -13,8 +13,10 @@ public class PlanC implements PlanEstudio {
         for (InscripcionMateria inscripcion : alumno.getInscripciones().values()) {
             Materia m = inscripcion.getMateria();
             if (m.getCuatrimestre() <= cuatrimestreMateria - 5) {
-                if (!alumno.aproboFinal(m)) {
-                    return false;
+                if (!materia.getCorrelativas().contains(m)) {
+                    if (!alumno.aproboFinal(m)) {
+                        return false;
+                    }
                 }
             }
         }

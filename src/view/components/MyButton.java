@@ -148,4 +148,20 @@ public class MyButton extends JButton {
 
         return btn;
     }
+
+    public static MyButton fuente(ActionListener listener) {
+        MyButton btn = new MyButton("", listener);
+        btn.setBackground(ThemeConfig.COLOR_TEMA);
+
+        ImageIcon icono = new ImageIcon(MyButton.class.getResource("/view/resources/fuente.png"));
+        Image imagen = icono.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
+        btn.setIcon(new ImageIcon(imagen));
+
+        btn.setForeground(Color.WHITE);
+        btn.setPreferredSize(new Dimension(50, 50));
+        btn.setHorizontalAlignment(SwingConstants.CENTER);
+        btn.setVerticalAlignment(SwingConstants.CENTER);
+
+        return btn;
+    }
 }

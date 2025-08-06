@@ -3,6 +3,7 @@ package view.panels;
 import model.*;
 import view.components.*;
 import controller.*;
+import controller.CarreraController.ResultadoOperacion;
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
@@ -56,25 +57,14 @@ public class CarrerasPanel extends JPanel {
                     int cantidadOptativas = formularioCarrera.getCantidadOptativas();
                     String tipoPlan = formularioCarrera.getTipoPlan();
 
-                    if (codigo.isEmpty() || nombre.isEmpty()) {
-                        JOptionPane.showMessageDialog(this, "Código y Nombre son obligatorios",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+                    ResultadoOperacion resultado = carreraController.agregarAccion(codigo, nombre, cantidadOptativas, tipoPlan);
 
-                    if (cantidadOptativas < 0) {
-                        JOptionPane.showMessageDialog(this, "Cantidad de optativas debe ser un número válido",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-
-                    boolean exito = carreraController.agregarAccion(codigo, nombre, cantidadOptativas, tipoPlan);
-                    if (exito) {
-                        JOptionPane.showMessageDialog(this, "Carrera creada exitosamente",
+                    if (resultado.isExito()) {
+                        JOptionPane.showMessageDialog(this, resultado.getMensaje(),
                                 "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         volverAListaPrincipal();
                     } else {
-                        JOptionPane.showMessageDialog(this, "Error: El código de carrera ya existe",
+                        JOptionPane.showMessageDialog(this, resultado.getMensaje(),
                                 "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 },
@@ -88,22 +78,16 @@ public class CarrerasPanel extends JPanel {
         if (carrera != null) {
             agregarMateriasPanel = new AgregarMateriasPanel(carrera,
                     e -> {
-                        if (!agregarMateriasPanel.haySeleccion()) {
-                            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos una materia",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-
                         List<String> materiasSeleccionadas = agregarMateriasPanel.getMateriasSeleccionadas();
-                        boolean exito = carreraController.agregarMateriasACarrera(codigoCarrera, materiasSeleccionadas);
+                        ResultadoOperacion resultado = carreraController.agregarMateriasACarrera(codigoCarrera, materiasSeleccionadas);
 
-                        if (exito) {
-                            JOptionPane.showMessageDialog(this, "Materias agregadas exitosamente",
-                                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        if (resultado.isExito()) {
+                            JOptionPane.showMessageDialog(this, resultado.getMensaje(),
+                                    "Materias Agregadas", JOptionPane.INFORMATION_MESSAGE);
                             volverAListaPrincipal();
                         } else {
-                            JOptionPane.showMessageDialog(this, "Error al agregar materias",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(this, resultado.getMensaje(),
+                                    "Error al Agregar Materias", JOptionPane.ERROR_MESSAGE);
                         }
                     },
                     e -> volverAListaPrincipal()
@@ -117,22 +101,16 @@ public class CarrerasPanel extends JPanel {
         if (carrera != null) {
             inscribirAlumnosPanel = new InscribirAlumnosPanel(carrera,
                     e -> {
-                        if (!inscribirAlumnosPanel.haySeleccion()) {
-                            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos un alumno",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-
                         List<String> alumnosSeleccionados = inscribirAlumnosPanel.getAlumnosSeleccionados();
-                        boolean exito = carreraController.inscribirAlumnosACarrera(codigoCarrera, alumnosSeleccionados);
+                        ResultadoOperacion resultado = carreraController.inscribirAlumnosACarrera(codigoCarrera, alumnosSeleccionados);
 
-                        if (exito) {
-                            JOptionPane.showMessageDialog(this, "Alumnos inscriptos exitosamente",
-                                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        if (resultado.isExito()) {
+                            JOptionPane.showMessageDialog(this, resultado.getMensaje(),
+                                    "Alumnos Inscriptos", JOptionPane.INFORMATION_MESSAGE);
                             volverAListaPrincipal();
                         } else {
-                            JOptionPane.showMessageDialog(this, "Error al inscribir alumnos",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(this, resultado.getMensaje(),
+                                    "Error al Inscribir Alumnos", JOptionPane.ERROR_MESSAGE);
                         }
                     },
                     e -> volverAListaPrincipal()

@@ -15,7 +15,6 @@ public class InscripcionMateria {
         this.promocionado = false;
     }
 
-    //get y set
     public Alumno getAlumno() {
         return alumno;
     }
@@ -46,7 +45,6 @@ public class InscripcionMateria {
         return finalAprobado || promocionado;
     }
 
-    //toSting
     @Override
     public String toString() {
         String estado = "";

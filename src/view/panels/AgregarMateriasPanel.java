@@ -7,13 +7,14 @@ import java.util.List;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.*;
 
 public class AgregarMateriasPanel extends JPanel {
 
     private JPanel listaPanelMaterias;
-    private Map<String, JCheckBox> checkboxesMaterias;
+    private Map<String, Boolean> materiasSeleccionadas;
+    private Map<String, JPanel> panelesMaterias;
     private MyButton btnAgregar;
     private MyButton btnCancelar;
     private Carrera carrera;
@@ -24,7 +25,8 @@ public class AgregarMateriasPanel extends JPanel {
         this.carrera = carrera;
         this.onAgregar = onAgregar;
         this.onCancelar = onCancelar;
-        this.checkboxesMaterias = new HashMap<>();
+        this.materiasSeleccionadas = new HashMap<>();
+        this.panelesMaterias = new HashMap<>();
 
         configurarPanel();
         crearComponentes();
@@ -81,7 +83,8 @@ public class AgregarMateriasPanel extends JPanel {
         List<Materia> todasLasMaterias = Facultad.getInstance().getMaterias();
         List<Materia> materiasCarrera = carrera.getMaterias();
 
-        checkboxesMaterias.clear();
+        materiasSeleccionadas.clear();
+        panelesMaterias.clear();
         listaPanelMaterias.removeAll();
 
         for (Materia materia : todasLasMaterias) {
@@ -89,10 +92,13 @@ public class AgregarMateriasPanel extends JPanel {
                 JPanel itemPanel = crearItemMateria(materia);
                 listaPanelMaterias.add(itemPanel);
                 listaPanelMaterias.add(Box.createVerticalStrut(5));
+
+                materiasSeleccionadas.put(materia.getCodigo(), false);
+                panelesMaterias.put(materia.getCodigo(), itemPanel);
             }
         }
 
-        if (checkboxesMaterias.isEmpty()) {
+        if (materiasSeleccionadas.isEmpty()) {
             JPanel emptyPanel = new JPanel(new FlowLayout());
             emptyPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
             emptyPanel.add(MyLabel.info("No hay materias disponibles para agregar"));
@@ -105,20 +111,16 @@ public class AgregarMateriasPanel extends JPanel {
 
     private JPanel crearItemMateria(Materia materia) {
         JPanel itemPanel = new JPanel(new BorderLayout());
-        itemPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        itemPanel.setBackground(ThemeConfig.COLOR_ITEM_NO_SELECCIONADO);
         itemPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(ThemeConfig.COLOR_BORDE_LINEA_SUAVE),
                 BorderFactory.createEmptyBorder(8, 12, 8, 12)
         ));
         itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
-
-        JCheckBox checkbox = new JCheckBox();
-        checkbox.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-        checkbox.setForeground(ThemeConfig.COLOR_TEXTO);
-        checkboxesMaterias.put(materia.getCodigo(), checkbox);
+        itemPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         JPanel infoPanel = new JPanel(new GridLayout(2, 1));
-        infoPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        infoPanel.setBackground(ThemeConfig.COLOR_ITEM_NO_SELECCIONADO);
 
         String tipoTexto = materia.esObligatoria() ? "Obligatoria" : "Optativa";
         String correlativasTexto = materia.getCorrelativas().isEmpty() ? "Sin correlativas" :
@@ -131,30 +133,49 @@ public class AgregarMateriasPanel extends JPanel {
         infoPanel.add(nombreLabel);
         infoPanel.add(detallesLabel);
 
-        itemPanel.add(checkbox, BorderLayout.WEST);
         itemPanel.add(infoPanel, BorderLayout.CENTER);
+
+        itemPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                toggleSeleccion(materia.getCodigo());
+            }
+        });
 
         return itemPanel;
     }
 
-    public List<String> getMateriasSeleccionadas() {
-        List<String> seleccionadas = new ArrayList<>();
+    private void toggleSeleccion(String codigoMateria) {
+        boolean estaSeleccionado = materiasSeleccionadas.get(codigoMateria);
+        boolean nuevaSeleccion = !estaSeleccionado;
 
-        for (Map.Entry<String, JCheckBox> entry : checkboxesMaterias.entrySet()) {
-            if (entry.getValue().isSelected()) {
-                seleccionadas.add(entry.getKey());
+        materiasSeleccionadas.put(codigoMateria, nuevaSeleccion);
+
+        JPanel panel = panelesMaterias.get(codigoMateria);
+        Color nuevoColor = nuevaSeleccion ? ThemeConfig.COLOR_ITEM_SELECCIONADO : ThemeConfig.COLOR_ITEM_NO_SELECCIONADO;
+
+        panel.setBackground(nuevoColor);
+
+        for (Component comp : panel.getComponents()) {
+            if (comp instanceof JPanel) {
+                comp.setBackground(nuevoColor);
             }
         }
 
+        panel.repaint();
+    }
+
+    public List<String> getMateriasSeleccionadas() {
+        List<String> seleccionadas = new ArrayList<>();
+        for (Map.Entry<String, Boolean> entry : materiasSeleccionadas.entrySet()) {
+            if (entry.getValue()) {
+                seleccionadas.add(entry.getKey());
+            }
+        }
         return seleccionadas;
     }
 
     public boolean haySeleccion() {
-        for (JCheckBox checkbox : checkboxesMaterias.values()) {
-            if (checkbox.isSelected()) {
-                return true;
-            }
-        }
-        return false;
+        return materiasSeleccionadas.values().contains(true);
     }
 }

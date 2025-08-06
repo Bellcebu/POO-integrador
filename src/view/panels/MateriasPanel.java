@@ -2,6 +2,7 @@ package view.panels;
 
 import model.*;
 import controller.*;
+import controller.MateriaController.ResultadoOperacion;
 import view.components.*;
 import javax.swing.*;
 import java.awt.*;
@@ -59,25 +60,14 @@ public class MateriasPanel extends JPanel {
                     int cuatrimestre = formularioMateria.getCuatrimestre();
                     boolean esObligatoria = formularioMateria.esObligatoria();
 
-                    if (codigo.isEmpty() || nombre.isEmpty()) {
-                        JOptionPane.showMessageDialog(this, "Código y Nombre son obligatorios",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
+                    ResultadoOperacion resultado = materiaController.agregarAccion(codigo, nombre, cuatrimestre, esObligatoria);
 
-                    if (cuatrimestre <= 0) {
-                        JOptionPane.showMessageDialog(this, "Cuatrimestre debe ser un número válido mayor a 0",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-
-                    boolean exito = materiaController.agregarAccion(codigo, nombre, cuatrimestre, esObligatoria);
-                    if (exito) {
-                        JOptionPane.showMessageDialog(this, "Materia creada exitosamente.\nPuedes asignarla a carreras desde el panel de cada carrera.",
+                    if (resultado.isExito()) {
+                        JOptionPane.showMessageDialog(this, resultado.getMensaje(),
                                 "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         volverAListaPrincipal();
                     } else {
-                        JOptionPane.showMessageDialog(this, "Error: El código de materia ya existe",
+                        JOptionPane.showMessageDialog(this, resultado.getMensaje(),
                                 "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 },
@@ -91,22 +81,16 @@ public class MateriasPanel extends JPanel {
         if (materia != null) {
             agregarCorrelativasPanel = new AgregarCorrelativasPanel(materia,
                     e -> {
-                        if (!agregarCorrelativasPanel.haySeleccion()) {
-                            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos una materia",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-
                         List<String> correlativasSeleccionadas = agregarCorrelativasPanel.getCorrelativasSeleccionadas();
-                        boolean exito = materiaController.agregarCorrelativasAMateria(codigoMateria, correlativasSeleccionadas);
+                        ResultadoOperacion resultado = materiaController.agregarCorrelativasAMateria(codigoMateria, correlativasSeleccionadas);
 
-                        if (exito) {
-                            JOptionPane.showMessageDialog(this, "Correlativas agregadas exitosamente",
-                                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        if (resultado.isExito()) {
+                            JOptionPane.showMessageDialog(this, resultado.getMensaje(),
+                                    "Correlativas Agregadas", JOptionPane.INFORMATION_MESSAGE);
                             volverAListaPrincipal();
                         } else {
-                            JOptionPane.showMessageDialog(this, "Error al agregar correlativas",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(this, resultado.getMensaje(),
+                                    "Error al Agregar Correlativas", JOptionPane.ERROR_MESSAGE);
                         }
                     },
                     e -> volverAListaPrincipal()

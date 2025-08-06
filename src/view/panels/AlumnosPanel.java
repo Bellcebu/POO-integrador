@@ -1,9 +1,9 @@
 package view.panels;
 
+import controller.*;
 import model.*;
 import view.components.*;
-import controller.*;
-import view.config.ThemeConfig;
+import view.config.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +35,10 @@ public class AlumnosPanel extends JPanel {
                 e -> inscribirAMaterias(e.getActionCommand()),
                 e -> verMaterias(e.getActionCommand()),
                 e -> mostrarInfo(e.getActionCommand()),
-                e -> { ordenAZ = !ordenAZ; actualizarLista(); },
+                e -> {
+                    ordenAZ = !ordenAZ;
+                    actualizarLista();
+                },
                 ordenAZ ? "A→Z" : "Z→A",
                 e -> {
                     textoBusqueda = e.getActionCommand();
@@ -76,19 +79,12 @@ public class AlumnosPanel extends JPanel {
                 e -> {
                     String nombre = formularioAlumno.getNombre();
                     String legajo = formularioAlumno.getLegajo();
-
-                    if (nombre.isEmpty() || legajo.isEmpty()) {
-                        JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios",
-                                "Error", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-
-                    boolean exito = alumnoController.agregarAccion(nombre, legajo);
-                    if (exito) {
+                    AlumnoController.ResultadoOperacion resultado = alumnoController.agregarAccion(nombre, legajo);
+                    if (resultado.isExito()) {
+                        JOptionPane.showMessageDialog(this, resultado.getMensaje(), "Éxito", JOptionPane.INFORMATION_MESSAGE);
                         volverAListaPrincipal();
                     } else {
-                        JOptionPane.showMessageDialog(this, "El legajo ya existe",
-                                "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, resultado.getMensaje(), "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 },
                 e -> volverAListaPrincipal()
@@ -101,22 +97,13 @@ public class AlumnosPanel extends JPanel {
         if (alumno != null) {
             inscribirMateriasPanel = new InscribirMateriasPanel(alumno, alumnoController,
                     e -> {
-                        if (!inscribirMateriasPanel.haySeleccion()) {
-                            JOptionPane.showMessageDialog(this, "Debe seleccionar al menos una materia",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-
                         List<String> materiasSeleccionadas = inscribirMateriasPanel.getMateriasSeleccionadas();
-                        boolean exito = alumnoController.inscribirAlumnoAMaterias(legajo, materiasSeleccionadas);
-
-                        if (exito) {
-                            JOptionPane.showMessageDialog(this, "Materias inscriptas exitosamente",
-                                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        AlumnoController.ResultadoOperacion resultado = alumnoController.inscribirAlumnoAMaterias(legajo, materiasSeleccionadas);
+                        if (resultado.isExito()) {
+                            JOptionPane.showMessageDialog(this, resultado.getMensaje(), "Inscripción Completada", JOptionPane.INFORMATION_MESSAGE);
                             volverAListaPrincipal();
                         } else {
-                            JOptionPane.showMessageDialog(this, "Error al inscribir materias",
-                                    "Error", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(this, resultado.getMensaje(), "Error en Inscripción", JOptionPane.ERROR_MESSAGE);
                         }
                     },
                     e -> volverAListaPrincipal()

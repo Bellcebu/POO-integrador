@@ -14,7 +14,8 @@ import java.util.*;
 public class InscribirAlumnosPanel extends JPanel {
 
     private JPanel listaPanelAlumnos;
-    private Map<String, JCheckBox> checkboxesAlumnos;
+    private Map<String, Boolean> alumnosSeleccionados;
+    private Map<String, JPanel> panelesAlumnos;
     private MyButton btnInscribir;
     private MyButton btnCancelar;
     private Carrera carrera;
@@ -25,7 +26,8 @@ public class InscribirAlumnosPanel extends JPanel {
         this.carrera = carrera;
         this.onInscribir = onInscribir;
         this.onCancelar = onCancelar;
-        this.checkboxesAlumnos = new HashMap<>();
+        this.alumnosSeleccionados = new HashMap<>();
+        this.panelesAlumnos = new HashMap<>();
 
         configurarPanel();
         crearComponentes();
@@ -82,7 +84,8 @@ public class InscribirAlumnosPanel extends JPanel {
         List<Alumno> todosLosAlumnos = Facultad.getInstance().getAlumnos();
         List<Alumno> alumnosCarrera = carrera.getAlumnos();
 
-        checkboxesAlumnos.clear();
+        alumnosSeleccionados.clear();
+        panelesAlumnos.clear();
         listaPanelAlumnos.removeAll();
 
         for (Alumno alumno : todosLosAlumnos) {
@@ -90,10 +93,13 @@ public class InscribirAlumnosPanel extends JPanel {
                 JPanel itemPanel = crearItemAlumno(alumno);
                 listaPanelAlumnos.add(itemPanel);
                 listaPanelAlumnos.add(Box.createVerticalStrut(5));
+
+                alumnosSeleccionados.put(alumno.getLegajo(), false);
+                panelesAlumnos.put(alumno.getLegajo(), itemPanel);
             }
         }
 
-        if (checkboxesAlumnos.isEmpty()) {
+        if (alumnosSeleccionados.isEmpty()) {
             JPanel emptyPanel = new JPanel(new FlowLayout());
             emptyPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
             emptyPanel.add(MyLabel.info("No hay alumnos disponibles para inscribir"));
@@ -106,48 +112,63 @@ public class InscribirAlumnosPanel extends JPanel {
 
     private JPanel crearItemAlumno(Alumno alumno) {
         JPanel itemPanel = new JPanel(new BorderLayout());
-        itemPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        itemPanel.setBackground(ThemeConfig.COLOR_ITEM_NO_SELECCIONADO);
         itemPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(ThemeConfig.COLOR_BORDE_LINEA_SUAVE),
                 BorderFactory.createEmptyBorder(8, 12, 8, 12)
         ));
         itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
-
-        JCheckBox checkbox = new JCheckBox();
-        checkbox.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-        checkbox.setForeground(ThemeConfig.COLOR_TEXTO);
-        checkboxesAlumnos.put(alumno.getLegajo(), checkbox);
+        itemPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         JPanel infoPanel = new JPanel(new GridLayout(1, 1));
-        infoPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
+        infoPanel.setBackground(ThemeConfig.COLOR_ITEM_NO_SELECCIONADO);
 
         MyLabel nombreLabel = MyLabel.textoFormulario(alumno.getNombre() + " (" + alumno.getLegajo() + ")");
         infoPanel.add(nombreLabel);
 
-        itemPanel.add(checkbox, BorderLayout.WEST);
         itemPanel.add(infoPanel, BorderLayout.CENTER);
+
+        itemPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                toggleSeleccion(alumno.getLegajo());
+            }
+        });
 
         return itemPanel;
     }
 
-    public List<String> getAlumnosSeleccionados() {
-        List<String> seleccionados = new ArrayList<>();
+    private void toggleSeleccion(String legajoAlumno) {
+        boolean estaSeleccionado = alumnosSeleccionados.get(legajoAlumno);
+        boolean nuevaSeleccion = !estaSeleccionado;
 
-        for (Map.Entry<String, JCheckBox> entry : checkboxesAlumnos.entrySet()) {
-            if (entry.getValue().isSelected()) {
-                seleccionados.add(entry.getKey());
+        alumnosSeleccionados.put(legajoAlumno, nuevaSeleccion);
+
+        JPanel panel = panelesAlumnos.get(legajoAlumno);
+        Color nuevoColor = nuevaSeleccion ? ThemeConfig.COLOR_ITEM_SELECCIONADO : ThemeConfig.COLOR_ITEM_NO_SELECCIONADO;
+
+        panel.setBackground(nuevoColor);
+
+        for (Component comp : panel.getComponents()) {
+            if (comp instanceof JPanel) {
+                comp.setBackground(nuevoColor);
             }
         }
 
+        panel.repaint();
+    }
+
+    public List<String> getAlumnosSeleccionados() {
+        List<String> seleccionados = new ArrayList<>();
+        for (Map.Entry<String, Boolean> entry : alumnosSeleccionados.entrySet()) {
+            if (entry.getValue()) {
+                seleccionados.add(entry.getKey());
+            }
+        }
         return seleccionados;
     }
 
     public boolean haySeleccion() {
-        for (JCheckBox checkbox : checkboxesAlumnos.values()) {
-            if (checkbox.isSelected()) {
-                return true;
-            }
-        }
-        return false;
+        return alumnosSeleccionados.values().contains(true);
     }
 }
