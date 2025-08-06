@@ -87,26 +87,23 @@ public class AgregarMateriasPanel extends JPanel {
         panelesMaterias.clear();
         listaPanelMaterias.removeAll();
 
+        List<Materia> materiasDisponibles = new ArrayList<>();
         for (Materia materia : todasLasMaterias) {
             if (!materiasCarrera.contains(materia)) {
-                JPanel itemPanel = crearItemMateria(materia);
-                listaPanelMaterias.add(itemPanel);
-                listaPanelMaterias.add(Box.createVerticalStrut(5));
-
-                materiasSeleccionadas.put(materia.getCodigo(), false);
-                panelesMaterias.put(materia.getCodigo(), itemPanel);
+                materiasDisponibles.add(materia);
             }
         }
 
-        if (materiasSeleccionadas.isEmpty()) {
-            JPanel emptyPanel = new JPanel(new FlowLayout());
-            emptyPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-            emptyPanel.add(MyLabel.info("No hay materias disponibles para agregar"));
-            listaPanelMaterias.add(emptyPanel);
-        }
+        materiasDisponibles.sort((m1, m2) -> m1.getNombre().compareToIgnoreCase(m2.getNombre()));
 
-        listaPanelMaterias.revalidate();
-        listaPanelMaterias.repaint();
+        for (Materia materia : materiasDisponibles) {
+            JPanel itemPanel = crearItemMateria(materia);
+            listaPanelMaterias.add(itemPanel);
+            listaPanelMaterias.add(Box.createVerticalStrut(5));
+
+            materiasSeleccionadas.put(materia.getCodigo(), false);
+            panelesMaterias.put(materia.getCodigo(), itemPanel);
+        }
     }
 
     private JPanel crearItemMateria(Materia materia) {

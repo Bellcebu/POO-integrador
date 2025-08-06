@@ -4,6 +4,8 @@ import model.*;
 import persistence.ArchivoCarreras;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
 
 public class CarreraController {
 
@@ -156,35 +158,60 @@ public class CarreraController {
             return new ResultadoOperacion(false, "Carrera no encontrada");
         }
 
+        List<Materia> materiasAAgregar = new ArrayList<>();
+        List<String> materiasNoEncontradas = new ArrayList<>();
+
+        for (String codigoMateria : codigosMaterias) {
+            if (codigoMateria != null && !codigoMateria.trim().isEmpty()) {
+                Materia materia = Materia.buscarPorCodigo(codigoMateria.trim(), Facultad.getInstance().getMaterias());
+                if (materia != null && !carrera.getMaterias().contains(materia)) {
+                    materiasAAgregar.add(materia);
+                } else if (materia == null) {
+                    materiasNoEncontradas.add(codigoMateria.trim());
+                }
+            }
+        }
+
+        if (!materiasNoEncontradas.isEmpty()) {
+            return new ResultadoOperacion(false, "Materias no encontradas: " + String.join(", ", materiasNoEncontradas));
+        }
+
+        Set<Materia> todasLasMateriasNecesarias = new HashSet<>(materiasAAgregar);
+        Set<Materia> materiasYaEnCarrera = new HashSet<>(carrera.getMaterias());
+        List<String> correlativasFaltantes = new ArrayList<>();
+
+        for (Materia materia : materiasAAgregar) {
+            for (Materia correlativa : materia.getCorrelativas()) {
+                if (!materiasYaEnCarrera.contains(correlativa) && !todasLasMateriasNecesarias.contains(correlativa)) {
+                    correlativasFaltantes.add(correlativa.getNombre() + " (" + correlativa.getCodigo() + ") - requerida por " + materia.getNombre());
+                }
+            }
+        }
+
+        if (!correlativasFaltantes.isEmpty()) {
+            String mensaje = "No se pueden agregar las materias porque faltan las siguientes correlativas:\n\n" +
+                    String.join("\n", correlativasFaltantes) +
+                    "\n\nDebe agregar primero las materias correlativas o incluirlas en la selección actual.";
+            return new ResultadoOperacion(false, mensaje);
+        }
+
         int materiasAgregadas = 0;
-        int materiasNoEncontradas = 0;
         int materiasYaExistentes = 0;
         List<String> materiasExitosas = new ArrayList<>();
 
-        for (String codigoMateria : codigosMaterias) {
-            if (codigoMateria == null || codigoMateria.trim().isEmpty()) {
-                continue;
-            }
-
-            Materia materia = Materia.buscarPorCodigo(codigoMateria.trim(), Facultad.getInstance().getMaterias());
-            if (materia != null) {
-                if (!carrera.getMaterias().contains(materia)) {
-                    carrera.agregarMateria(materia);
-                    materiasAgregadas++;
-                    materiasExitosas.add(materia.getNombre());
-                } else {
-                    materiasYaExistentes++;
-                }
+        for (Materia materia : materiasAAgregar) {
+            if (!carrera.getMaterias().contains(materia)) {
+                carrera.agregarMateria(materia);
+                materiasAgregadas++;
+                materiasExitosas.add(materia.getNombre());
             } else {
-                materiasNoEncontradas++;
+                materiasYaExistentes++;
             }
         }
 
         if (materiasAgregadas == 0) {
             if (materiasYaExistentes > 0) {
                 return new ResultadoOperacion(false, "Todas las materias seleccionadas ya pertenecían a la carrera");
-            } else if (materiasNoEncontradas > 0) {
-                return new ResultadoOperacion(false, "No se encontraron materias válidas para agregar");
             } else {
                 return new ResultadoOperacion(false, "No se pudo agregar ninguna materia");
             }
@@ -193,7 +220,7 @@ public class CarreraController {
         ArchivoCarreras.actualizar(carrera);
 
         return generarMensajeResultadoMaterias(materiasAgregadas, materiasExitosas,
-                materiasYaExistentes, materiasNoEncontradas, codigosMaterias.size());
+                materiasYaExistentes, 0, codigosMaterias.size());
     }
 
     private ResultadoOperacion generarMensajeResultadoAlumnos(int alumnosInscriptos, List<String> alumnosExitosos,
@@ -250,55 +277,55 @@ public class CarreraController {
         return new ResultadoOperacion(true, mensaje.toString());
     }
 
-        public Carrera buscarCarreraPorCodigo (String codigo){
-            if (codigo == null || codigo.trim().isEmpty()) {
-                return null;
-            }
-
-            for (Carrera carrera : Facultad.getInstance().getCarreras()) {
-                if (carrera.getCodigo().equals(codigo.trim())) {
-                    return carrera;
-                }
-            }
+    public Carrera buscarCarreraPorCodigo (String codigo){
+        if (codigo == null || codigo.trim().isEmpty()) {
             return null;
         }
 
-        public List<Carrera> buscarCarreras (String textoBusqueda){
-            if (textoBusqueda == null || textoBusqueda.trim().isEmpty()) {
-                return new ArrayList<>(Facultad.getInstance().getCarreras());
+        for (Carrera carrera : Facultad.getInstance().getCarreras()) {
+            if (carrera.getCodigo().equals(codigo.trim())) {
+                return carrera;
             }
+        }
+        return null;
+    }
 
-            String busqueda = textoBusqueda.trim().toLowerCase();
-            List<Carrera> resultados = new ArrayList<>();
-
-            for (Carrera carrera : Facultad.getInstance().getCarreras()) {
-                if (carrera.getNombre().toLowerCase().contains(busqueda) ||
-                        carrera.getCodigo().toLowerCase().contains(busqueda)) {
-                    resultados.add(carrera);
-                }
-            }
-
-            return resultados;
+    public List<Carrera> buscarCarreras (String textoBusqueda){
+        if (textoBusqueda == null || textoBusqueda.trim().isEmpty()) {
+            return new ArrayList<>(Facultad.getInstance().getCarreras());
         }
 
-        private PlanEstudio crearPlan (String tipoPlan){
-            if (tipoPlan == null) {
+        String busqueda = textoBusqueda.trim().toLowerCase();
+        List<Carrera> resultados = new ArrayList<>();
+
+        for (Carrera carrera : Facultad.getInstance().getCarreras()) {
+            if (carrera.getNombre().toLowerCase().contains(busqueda) ||
+                    carrera.getCodigo().toLowerCase().contains(busqueda)) {
+                resultados.add(carrera);
+            }
+        }
+
+        return resultados;
+    }
+
+    private PlanEstudio crearPlan (String tipoPlan){
+        if (tipoPlan == null) {
+            return null;
+        }
+
+        switch (tipoPlan.toUpperCase()) {
+            case "PLANA":
+                return new PlanA();
+            case "PLANB":
+                return new PlanB();
+            case "PLANC":
+                return new PlanC();
+            case "PLAND":
+                return new PlanD();
+            case "PLANE":
+                return new PlanE();
+            default:
                 return null;
-            }
-
-            switch (tipoPlan.toUpperCase()) {
-                case "PLANA":
-                    return new PlanA();
-                case "PLANB":
-                    return new PlanB();
-                case "PLANC":
-                    return new PlanC();
-                case "PLAND":
-                    return new PlanD();
-                case "PLANE":
-                    return new PlanE();
-                default:
-                    return null;
-            }
         }
+    }
 }

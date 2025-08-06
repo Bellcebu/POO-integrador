@@ -3,7 +3,7 @@ package view.panels;
 import controller.*;
 import model.*;
 import view.components.*;
-import view.config.*;
+import view.components.MyDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -81,10 +81,10 @@ public class AlumnosPanel extends JPanel {
                     String legajo = formularioAlumno.getLegajo();
                     AlumnoController.ResultadoOperacion resultado = alumnoController.agregarAccion(nombre, legajo);
                     if (resultado.isExito()) {
-                        JOptionPane.showMessageDialog(this, resultado.getMensaje(), "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        MyDialog.showSuccess(this, resultado.getMensaje());
                         volverAListaPrincipal();
                     } else {
-                        JOptionPane.showMessageDialog(this, resultado.getMensaje(), "Error", JOptionPane.ERROR_MESSAGE);
+                        MyDialog.showError(this, resultado.getMensaje(), "Error");
                     }
                 },
                 e -> volverAListaPrincipal()
@@ -100,10 +100,10 @@ public class AlumnosPanel extends JPanel {
                         List<String> materiasSeleccionadas = inscribirMateriasPanel.getMateriasSeleccionadas();
                         AlumnoController.ResultadoOperacion resultado = alumnoController.inscribirAlumnoAMaterias(legajo, materiasSeleccionadas);
                         if (resultado.isExito()) {
-                            JOptionPane.showMessageDialog(this, resultado.getMensaje(), "Inscripción Completada", JOptionPane.INFORMATION_MESSAGE);
+                            MyDialog.showInfo(this, resultado.getMensaje(), "Inscripción Completada");
                             volverAListaPrincipal();
                         } else {
-                            JOptionPane.showMessageDialog(this, resultado.getMensaje(), "Error en Inscripción", JOptionPane.ERROR_MESSAGE);
+                            MyDialog.showError(this, resultado.getMensaje(), "Error en Inscripción");
                         }
                     },
                     e -> volverAListaPrincipal()

@@ -1,6 +1,34 @@
-MAT1☆Mat1☆1☆true☆MAT3,MAT2
-MAT2☆Mat2☆2☆true☆
-MAT3☆Mat3☆3☆true☆
-MAT4☆Mat4☆4☆true☆
-MAT5☆Mat5☆5☆true☆
-MAT6☆Mat6☆6☆true☆
+MAT001☆Matemática I☆1☆true☆
+FIS001☆Física I☆1☆true☆
+QUI001☆Química General☆1☆true☆
+ALG001☆Algebra Lineal☆1☆true☆
+CAL001☆Cálculo I☆2☆true☆MAT001
+FIS002☆Física II☆2☆true☆FIS001,MAT001
+PRO001☆Programación I☆2☆true☆ALG001
+EST001☆Estadística☆2☆true☆MAT001
+CAL002☆Cálculo II☆3☆true☆CAL001
+PRO002☆Programación II☆3☆true☆PRO001
+BDD001☆Base de Datos☆3☆true☆PRO001
+ARQ001☆Arqui. Computadoras☆3☆true☆FIS002
+CAL003☆Cálculo III☆4☆true☆CAL002
+ALG002☆Algor. Estructuras☆4☆true☆PRO002
+SIS001☆Sistem. Operativos☆4☆true☆ARQ001
+RED001☆Redes Computadoras☆4☆true☆ARQ001
+ING001☆Ingeniería de Software☆5☆true☆BDD001,ALG002
+IA001☆Inteligencia Artificial☆5☆false☆ALG002,EST001
+WEB001☆Desarrollo Web☆5☆false☆BDD001,PRO002
+MOV001☆Desarrollo Mobile☆6☆false☆PRO002
+SEG001☆Seguridad Informática☆6☆false☆RED001,SIS001
+TES001☆Tesis☆6☆true☆ING001
+ECO001☆Economía☆1☆true☆
+ADM001☆Administración I☆2☆true☆ECO001
+CON001☆Contabilidad I☆2☆true☆MAT001
+MKT001☆Marketing I☆3☆true☆ADM001
+FIN001☆Finanzas I☆3☆true☆CON001,EST001
+ADM002☆Administración II☆4☆true☆ADM001
+CON002☆Contabilidad II☆4☆true☆CON001
+MKT002☆Marketing II☆5☆true☆MKT001
+FIN002☆Finanzas II☆5☆true☆FIN001
+EMP001☆Emprendedurismo☆5☆false☆ADM002,MKT001
+INV001☆Invest. Mercados☆6☆false☆MKT002,EST001
+AUD001☆Auditoría☆6☆false☆CON002

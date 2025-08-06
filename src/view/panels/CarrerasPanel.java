@@ -5,6 +5,7 @@ import view.components.*;
 import controller.*;
 import controller.CarreraController.ResultadoOperacion;
 import javax.swing.*;
+import view.components.MyDialog;
 import java.awt.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,12 +61,10 @@ public class CarrerasPanel extends JPanel {
                     ResultadoOperacion resultado = carreraController.agregarAccion(codigo, nombre, cantidadOptativas, tipoPlan);
 
                     if (resultado.isExito()) {
-                        JOptionPane.showMessageDialog(this, resultado.getMensaje(),
-                                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        MyDialog.showSuccess(this, resultado.getMensaje());
                         volverAListaPrincipal();
                     } else {
-                        JOptionPane.showMessageDialog(this, resultado.getMensaje(),
-                                "Error", JOptionPane.ERROR_MESSAGE);
+                        MyDialog.showError(this, resultado.getMensaje(), "Error");
                     }
                 },
                 e -> volverAListaPrincipal()
@@ -82,12 +81,10 @@ public class CarrerasPanel extends JPanel {
                         ResultadoOperacion resultado = carreraController.agregarMateriasACarrera(codigoCarrera, materiasSeleccionadas);
 
                         if (resultado.isExito()) {
-                            JOptionPane.showMessageDialog(this, resultado.getMensaje(),
-                                    "Materias Agregadas", JOptionPane.INFORMATION_MESSAGE);
+                            MyDialog.showInfo(this, resultado.getMensaje(), "Materias Agregadas");
                             volverAListaPrincipal();
                         } else {
-                            JOptionPane.showMessageDialog(this, resultado.getMensaje(),
-                                    "Error al Agregar Materias", JOptionPane.ERROR_MESSAGE);
+                            MyDialog.showError(this, resultado.getMensaje(), "Error al Agregar Materias");
                         }
                     },
                     e -> volverAListaPrincipal()
@@ -105,12 +102,10 @@ public class CarrerasPanel extends JPanel {
                         ResultadoOperacion resultado = carreraController.inscribirAlumnosACarrera(codigoCarrera, alumnosSeleccionados);
 
                         if (resultado.isExito()) {
-                            JOptionPane.showMessageDialog(this, resultado.getMensaje(),
-                                    "Alumnos Inscriptos", JOptionPane.INFORMATION_MESSAGE);
+                            MyDialog.showInfo(this, resultado.getMensaje(), "Alumnos Inscriptos");
                             volverAListaPrincipal();
                         } else {
-                            JOptionPane.showMessageDialog(this, resultado.getMensaje(),
-                                    "Error al Inscribir Alumnos", JOptionPane.ERROR_MESSAGE);
+                            MyDialog.showError(this, resultado.getMensaje(), "Error al Inscribir Alumnos");
                         }
                     },
                     e -> volverAListaPrincipal()

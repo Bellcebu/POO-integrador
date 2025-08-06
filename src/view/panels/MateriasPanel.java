@@ -6,6 +6,7 @@ import controller.MateriaController.ResultadoOperacion;
 import view.components.*;
 import javax.swing.*;
 import java.awt.*;
+import view.components.MyDialog;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,12 +64,10 @@ public class MateriasPanel extends JPanel {
                     ResultadoOperacion resultado = materiaController.agregarAccion(codigo, nombre, cuatrimestre, esObligatoria);
 
                     if (resultado.isExito()) {
-                        JOptionPane.showMessageDialog(this, resultado.getMensaje(),
-                                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                        MyDialog.showSuccess(this, resultado.getMensaje());
                         volverAListaPrincipal();
                     } else {
-                        JOptionPane.showMessageDialog(this, resultado.getMensaje(),
-                                "Error", JOptionPane.ERROR_MESSAGE);
+                        MyDialog.showError(this, resultado.getMensaje(), "Error");
                     }
                 },
                 e -> volverAListaPrincipal()
@@ -85,12 +84,10 @@ public class MateriasPanel extends JPanel {
                         ResultadoOperacion resultado = materiaController.agregarCorrelativasAMateria(codigoMateria, correlativasSeleccionadas);
 
                         if (resultado.isExito()) {
-                            JOptionPane.showMessageDialog(this, resultado.getMensaje(),
-                                    "Correlativas Agregadas", JOptionPane.INFORMATION_MESSAGE);
+                            MyDialog.showInfo(this, resultado.getMensaje(), "Correlativas Agregadas");
                             volverAListaPrincipal();
                         } else {
-                            JOptionPane.showMessageDialog(this, resultado.getMensaje(),
-                                    "Error al Agregar Correlativas", JOptionPane.ERROR_MESSAGE);
+                            MyDialog.showError(this, resultado.getMensaje(), "Error al Agregar Correlativas");
                         }
                     },
                     e -> volverAListaPrincipal()

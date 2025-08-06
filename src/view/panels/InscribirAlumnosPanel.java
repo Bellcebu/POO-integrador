@@ -88,15 +88,22 @@ public class InscribirAlumnosPanel extends JPanel {
         panelesAlumnos.clear();
         listaPanelAlumnos.removeAll();
 
+        List<Alumno> alumnosDisponibles = new ArrayList<>();
         for (Alumno alumno : todosLosAlumnos) {
             if (!alumnosCarrera.contains(alumno)) {
-                JPanel itemPanel = crearItemAlumno(alumno);
-                listaPanelAlumnos.add(itemPanel);
-                listaPanelAlumnos.add(Box.createVerticalStrut(5));
-
-                alumnosSeleccionados.put(alumno.getLegajo(), false);
-                panelesAlumnos.put(alumno.getLegajo(), itemPanel);
+                alumnosDisponibles.add(alumno);
             }
+        }
+
+        alumnosDisponibles.sort((a1, a2) -> a1.getNombre().compareToIgnoreCase(a2.getNombre()));
+
+        for (Alumno alumno : alumnosDisponibles) {
+            JPanel itemPanel = crearItemAlumno(alumno);
+            listaPanelAlumnos.add(itemPanel);
+            listaPanelAlumnos.add(Box.createVerticalStrut(5));
+
+            alumnosSeleccionados.put(alumno.getLegajo(), false);
+            panelesAlumnos.put(alumno.getLegajo(), itemPanel);
         }
 
         if (alumnosSeleccionados.isEmpty()) {

@@ -94,27 +94,24 @@ public class AgregarCorrelativasPanel extends JPanel {
         panelesMaterias.clear();
         listaPanelMaterias.removeAll();
 
+        List<Materia> materiasDisponibles = new ArrayList<>();
         for (Materia m : todasLasMaterias) {
             if (!m.getCodigo().equals(materia.getCodigo()) &&
                     !materia.getCorrelativas().contains(m)) {
-                JPanel itemPanel = crearItemMateria(m);
-                listaPanelMaterias.add(itemPanel);
-                listaPanelMaterias.add(Box.createVerticalStrut(5));
-
-                correlativasSeleccionadas.put(m.getCodigo(), false);
-                panelesMaterias.put(m.getCodigo(), itemPanel);
+                materiasDisponibles.add(m);
             }
         }
 
-        if (correlativasSeleccionadas.isEmpty()) {
-            JPanel emptyPanel = new JPanel(new FlowLayout());
-            emptyPanel.setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
-            emptyPanel.add(MyLabel.info("No hay materias disponibles para agregar como correlativas"));
-            listaPanelMaterias.add(emptyPanel);
-        }
+        materiasDisponibles.sort((m1, m2) -> m1.getNombre().compareToIgnoreCase(m2.getNombre()));
 
-        listaPanelMaterias.revalidate();
-        listaPanelMaterias.repaint();
+        for (Materia m : materiasDisponibles) {
+            JPanel itemPanel = crearItemMateria(m);
+            listaPanelMaterias.add(itemPanel);
+            listaPanelMaterias.add(Box.createVerticalStrut(5));
+
+            correlativasSeleccionadas.put(m.getCodigo(), false);
+            panelesMaterias.put(m.getCodigo(), itemPanel);
+        }
     }
 
     private JPanel crearItemMateria(Materia m) {

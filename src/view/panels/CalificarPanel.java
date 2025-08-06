@@ -4,6 +4,7 @@ import model.*;
 import view.components.*;
 import view.config.ThemeConfig;
 import controller.*;
+import view.components.MyDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -180,12 +181,10 @@ public class CalificarPanel extends JPanel {
         }
 
         if (algunCambio) {
-            JOptionPane.showMessageDialog(this, "Calificaciones actualizadas exitosamente",
-                    "Éxito", JOptionPane.INFORMATION_MESSAGE);
+            MyDialog.showSuccess(this, "Calificaciones actualizadas exitosamente");
             onGuardar.actionPerformed(null);
         } else {
-            JOptionPane.showMessageDialog(this, "Error al actualizar calificaciones",
-                    "Error", JOptionPane.ERROR_MESSAGE);
+            MyDialog.showError(this, "Error al actualizar calificaciones", "Error");
         }
     }
 }
