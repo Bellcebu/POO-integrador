@@ -2,10 +2,9 @@ package controller;
 
 import model.*;
 import persistence.ArchivoCarreras;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.HashSet;
+
+import java.util.*;
+import java.util.function.Supplier;
 
 public class CarreraController {
 
@@ -308,24 +307,21 @@ public class CarreraController {
         return resultados;
     }
 
-    private PlanEstudio crearPlan (String tipoPlan){
-        if (tipoPlan == null) {
-            return null;
+    private static PlanEstudio crearPlan(String tipoPlan) {
+        Map<String, Supplier<PlanEstudio>> planFactory = Map.of(
+                "PLANA", PlanA::new,
+                "PLANB", PlanB::new,
+                "PLANC", PlanC::new,
+                "PLAND", PlanD::new,
+                "PLANE", PlanE::new
+        );
+
+        Supplier<PlanEstudio> planSupplier = planFactory.get(tipoPlan.toUpperCase());
+        if (planSupplier != null) {
+            return planSupplier.get();
         }
 
-        switch (tipoPlan.toUpperCase()) {
-            case "PLANA":
-                return new PlanA();
-            case "PLANB":
-                return new PlanB();
-            case "PLANC":
-                return new PlanC();
-            case "PLAND":
-                return new PlanD();
-            case "PLANE":
-                return new PlanE();
-            default:
-                return null;
-        }
+        System.out.println("Tipo de plan desconocido: " + tipoPlan);
+        return null;
     }
 }
