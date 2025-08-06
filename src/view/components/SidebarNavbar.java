@@ -13,119 +13,158 @@ public class SidebarNavbar extends JPanel {
 
     private JButton selectedButton;
     private MyButton themeToggleButton;
+    private MyButton fontButton;
     private ActionListener onThemeChange;
+    private ActionListener onFontChange;
 
     public SidebarNavbar(ActionListener alumnos, ActionListener materias, ActionListener carreras) {
-        configurarPanel();
-        crearBotones(alumnos, materias, carreras);
-        crearBotonToggleTema();
+        this(alumnos, materias, carreras, null, null);
     }
 
-    public SidebarNavbar(ActionListener alumnos, ActionListener materias, ActionListener carreras, ActionListener onThemeChange) {
+    public SidebarNavbar(ActionListener alumnos, ActionListener materias, ActionListener carreras,
+                         ActionListener onThemeChange) {
+        this(alumnos, materias, carreras, onThemeChange, null);
+    }
+
+    public SidebarNavbar(ActionListener alumnos, ActionListener materias, ActionListener carreras,
+                         ActionListener onThemeChange, ActionListener onFontChange) {
         this.onThemeChange = onThemeChange;
+        this.onFontChange = onFontChange;
         configurarPanel();
         crearBotones(alumnos, materias, carreras);
-        crearBotonToggleTema();
+        crearBotonesConfiguracion();
     }
 
     private void configurarPanel() {
         setBackground(ThemeConfig.COLOR_SIDEBAR_BACKGROUND);
         setPreferredSize(new Dimension(SIDEBAR_WIDTH, 0));
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        add(Box.createVerticalStrut(30));
+        setLayout(new BorderLayout());
     }
 
     private void crearBotones(ActionListener alumnos, ActionListener materias, ActionListener carreras) {
+        JPanel botonesPanel = new JPanel();
+        botonesPanel.setLayout(new BoxLayout(botonesPanel, BoxLayout.Y_AXIS));
+        botonesPanel.setBackground(ThemeConfig.COLOR_SIDEBAR_BACKGROUND);
+        botonesPanel.add(Box.createVerticalStrut(30));
+
         JButton btnAlumnos = crearBoton("ALUMNOS", alumnos);
-        add(btnAlumnos);
-        add(Box.createVerticalStrut(5));
+        botonesPanel.add(btnAlumnos);
+        botonesPanel.add(Box.createVerticalStrut(5));
 
         JButton btnMaterias = crearBoton("MATERIAS", materias);
-        add(btnMaterias);
-        add(Box.createVerticalStrut(5));
+        botonesPanel.add(btnMaterias);
+        botonesPanel.add(Box.createVerticalStrut(5));
 
         JButton btnCarreras = crearBoton("CARRERAS", carreras);
-        add(btnCarreras);
+        botonesPanel.add(btnCarreras);
 
         seleccionarBoton(btnAlumnos);
+
+        add(botonesPanel, BorderLayout.CENTER);
     }
 
-    private void crearBotonToggleTema() {
-        add(Box.createVerticalGlue());
-
-        JPanel togglePanel = new JPanel();
-        togglePanel.setLayout(null);
-        togglePanel.setBackground(ThemeConfig.COLOR_SIDEBAR_BACKGROUND);
-        togglePanel.setPreferredSize(new Dimension(200, 60));
+    private void crearBotonesConfiguracion() {
+        JPanel configPanel = new JPanel();
+        configPanel.setLayout(new BorderLayout());
+        configPanel.setBackground(ThemeConfig.COLOR_SIDEBAR_BACKGROUND);
+        configPanel.setPreferredSize(new Dimension(SIDEBAR_WIDTH, 60));
 
         themeToggleButton = MyButton.tema("", e -> toggleTema());
-        themeToggleButton.setBounds(15, 210, 50, 50);
-        togglePanel.add(themeToggleButton);
+        fontButton = MyButton.fuente(e -> cambiarFuente());
 
-        add(togglePanel);
+        themeToggleButton.setBackground(ThemeConfig.COLOR_TEMA);
+        fontButton.setBackground(ThemeConfig.COLOR_TEMA);
+
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        leftPanel.setBackground(ThemeConfig.COLOR_SIDEBAR_BACKGROUND);
+        leftPanel.add(themeToggleButton);
+
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        rightPanel.setBackground(ThemeConfig.COLOR_SIDEBAR_BACKGROUND);
+        rightPanel.add(fontButton);
+
+        configPanel.add(leftPanel, BorderLayout.WEST);
+        configPanel.add(rightPanel, BorderLayout.EAST);
+
+        add(configPanel, BorderLayout.SOUTH);
     }
 
-    private void actualizarBotonTema() {
-        Component[] components = getComponents();
-        for (Component comp : components) {
-            if (comp instanceof JPanel) {
-                JPanel panel = (JPanel) comp;
-                Component[] panelComponents = panel.getComponents();
-                for (Component panelComp : panelComponents) {
-                    if (panelComp == themeToggleButton) {
-                        panel.removeAll();
-                        themeToggleButton = MyButton.tema("", e -> toggleTema());
+    private void actualizarBotonesConfiguracion() {
+        JPanel configPanel = (JPanel) ((BorderLayout) getLayout()).getLayoutComponent(BorderLayout.SOUTH);
+        if (configPanel != null) {
+            configPanel.removeAll();
 
-                        if (panel.getLayout() == null) {
-                            themeToggleButton.setBounds(15, 210, 50, 50);
-                        }
+            themeToggleButton = MyButton.tema("", e -> toggleTema());
+            fontButton = MyButton.fuente(e -> cambiarFuente());
 
-                        panel.add(themeToggleButton);
-                        panel.revalidate();
-                        panel.repaint();
-                        return;
-                    }
-                }
-            }
+            themeToggleButton.setBackground(ThemeConfig.COLOR_TEMA);
+            fontButton.setBackground(ThemeConfig.COLOR_TEMA);
+
+            JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+            leftPanel.setBackground(ThemeConfig.COLOR_SIDEBAR_BACKGROUND);
+            leftPanel.add(themeToggleButton);
+
+            JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            rightPanel.setBackground(ThemeConfig.COLOR_SIDEBAR_BACKGROUND);
+            rightPanel.add(fontButton);
+
+            configPanel.add(leftPanel, BorderLayout.WEST);
+            configPanel.add(rightPanel, BorderLayout.EAST);
+
+            configPanel.revalidate();
+            configPanel.repaint();
         }
     }
 
     private void toggleTema() {
         ThemeConfig.modoOscuro = !ThemeConfig.modoOscuro;
         ThemeConfig.aplicarTema();
-        actualizarBotonTema();
-        actualizarColoresSidebar();
+        refrescarTema();
 
         if (onThemeChange != null) {
-            onThemeChange.actionPerformed(new java.awt.event.ActionEvent(this, 0, "theme_changed"));
+            onThemeChange.actionPerformed(new ActionEvent(this, 0, "theme_changed"));
+        }
+    }
+
+    private void cambiarFuente() {
+        ThemeConfig.cambiarTamanoFuente();
+
+        if (onFontChange != null) {
+            onFontChange.actionPerformed(new ActionEvent(this, 0, "font_changed"));
         }
     }
 
     private void actualizarColoresSidebar() {
         setBackground(ThemeConfig.COLOR_SIDEBAR_BACKGROUND);
+        actualizarColoresRecursivo(this);
+        repaint();
+    }
 
-        Component[] components = getComponents();
-        for (Component comp : components) {
-            if (comp instanceof JButton && comp != themeToggleButton) {
+    private void actualizarColoresRecursivo(Container container) {
+        for (Component comp : container.getComponents()) {
+            if (comp instanceof JButton) {
                 JButton btn = (JButton) comp;
                 btn.setForeground(ThemeConfig.COLOR_SIDEBAR_TEXT);
+                btn.setFont(new Font("Arial", Font.BOLD, ThemeConfig.tamanoFuente));
                 if (btn == selectedButton) {
                     btn.setBackground(ThemeConfig.COLOR_SIDEBAR_BUTTON_SELECTED);
+                } else if (btn == themeToggleButton || btn == fontButton) {
+                    btn.setBackground(ThemeConfig.COLOR_TEMA);
                 } else {
                     btn.setBackground(ThemeConfig.COLOR_SIDEBAR_BUTTON);
                 }
-            } else if (comp instanceof JPanel) {
+            } else if (comp instanceof Container) {
                 comp.setBackground(ThemeConfig.COLOR_SIDEBAR_BACKGROUND);
+                actualizarColoresRecursivo((Container) comp);
             }
         }
-        repaint();
     }
 
     private JButton crearBoton(String texto, ActionListener action) {
         JButton btn = new JButton(texto);
         btn.setBackground(ThemeConfig.COLOR_SIDEBAR_BUTTON);
         btn.setForeground(ThemeConfig.COLOR_SIDEBAR_TEXT);
-        btn.setFont(new Font("Arial", Font.BOLD, 18));
+        btn.setFont(new Font("Arial", Font.BOLD, ThemeConfig.tamanoFuente));
         btn.setBorderPainted(false);
         btn.setFocusPainted(false);
         btn.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -151,7 +190,7 @@ public class SidebarNavbar extends JPanel {
     }
 
     public void refrescarTema() {
-        actualizarBotonTema();
+        actualizarBotonesConfiguracion();
         actualizarColoresSidebar();
     }
 }

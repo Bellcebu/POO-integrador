@@ -30,7 +30,8 @@ public class Interfaz {
                 e -> mostrarAlumnos(),
                 e -> mostrarMaterias(),
                 e -> mostrarCarreras(),
-                e -> refrescarTodaLaInterfaz()
+                e -> refrescarTodaLaInterfaz(),
+                e -> cambiarFuente()
         );
 
         contentPanel = new JPanel(new BorderLayout());
@@ -61,6 +62,10 @@ public class Interfaz {
         contentPanel.add(nuevoPanel, BorderLayout.CENTER);
         contentPanel.revalidate();
         contentPanel.repaint();
+    }
+
+    private void cambiarFuente() {
+        refrescarTodaLaInterfaz();
     }
 
     private void refrescarTodaLaInterfaz() {

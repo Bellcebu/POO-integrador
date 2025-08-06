@@ -20,7 +20,7 @@ public class MyButton extends JButton {
     }
 
     private void configurarEstiloBasico() {
-        setFont(new Font("Arial", Font.BOLD, 18));
+        setFont(new Font("Arial", Font.BOLD, ThemeConfig.tamanoFuente));
         setFocusPainted(false);
         setBorderPainted(false);
         setContentAreaFilled(false);
@@ -68,7 +68,6 @@ public class MyButton extends JButton {
 
         g2d.dispose();
     }
-
 
     public static MyButton boton1(String texto, ActionListener listener) {
         MyButton btn = new MyButton(texto, listener);
@@ -128,7 +127,6 @@ public class MyButton extends JButton {
 
     public static MyButton tema(String texto, ActionListener listener) {
         MyButton btn = new MyButton("", listener);
-
         ImageIcon icono;
         if (ThemeConfig.modoOscuro) {
             icono = new ImageIcon(MyButton.class.getResource("/view/resources/sol.png"));
@@ -137,31 +135,25 @@ public class MyButton extends JButton {
             icono = new ImageIcon(MyButton.class.getResource("/view/resources/luna.png"));
             btn.setBackground(ThemeConfig.COLOR_TEMA);
         }
-
         Image imagen = icono.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         btn.setIcon(new ImageIcon(imagen));
-
         btn.setForeground(Color.WHITE);
         btn.setPreferredSize(new Dimension(50, 50));
         btn.setHorizontalAlignment(SwingConstants.CENTER);
         btn.setVerticalAlignment(SwingConstants.CENTER);
-
         return btn;
     }
 
     public static MyButton fuente(ActionListener listener) {
         MyButton btn = new MyButton("", listener);
         btn.setBackground(ThemeConfig.COLOR_TEMA);
-
         ImageIcon icono = new ImageIcon(MyButton.class.getResource("/view/resources/fuente.png"));
         Image imagen = icono.getImage().getScaledInstance(24, 24, Image.SCALE_SMOOTH);
         btn.setIcon(new ImageIcon(imagen));
-
         btn.setForeground(Color.WHITE);
         btn.setPreferredSize(new Dimension(50, 50));
         btn.setHorizontalAlignment(SwingConstants.CENTER);
         btn.setVerticalAlignment(SwingConstants.CENTER);
-
         return btn;
     }
 }

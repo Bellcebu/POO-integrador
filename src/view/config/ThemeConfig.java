@@ -41,7 +41,7 @@ public class ThemeConfig {
             COLOR_ELIMINAR = new Color(184, 0, 0);
             COLOR_VER = new Color(236, 224, 209);
             COLOR_ACTUALIZAR = new Color(171, 135, 108);
-            COLOR_TEMA = new Color(255, 230, 204);
+            COLOR_TEMA = new Color(236, 239, 241);
             COLOR_TEXTO = Color.WHITE;
             COLOR_TEXTO_BUTTON = Color.WHITE;
 
@@ -69,7 +69,7 @@ public class ThemeConfig {
             COLOR_ELIMINAR = new Color(244, 67, 54);
             COLOR_VER = new Color(96, 125, 139);
             COLOR_ACTUALIZAR = new Color(255, 193, 7);
-            COLOR_TEMA = new Color(236, 239, 241);
+            COLOR_TEMA = new Color(255, 230, 204);
             COLOR_TEXTO = new Color(33, 33, 33);
             COLOR_TEXTO_BUTTON = Color.WHITE;
 

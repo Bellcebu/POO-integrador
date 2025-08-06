@@ -18,7 +18,7 @@ public class MyTextField extends JTextField {
     }
 
     private void configurarEstilo() {
-        setFont(new Font("Arial", Font.PLAIN, 18));
+        setFont(new Font("Arial", Font.PLAIN, ThemeConfig.tamanoFuente));
         setBackground(ThemeConfig.COLOR_SECCIONPANEL_BACKGROUND);
         setForeground(ThemeConfig.COLOR_TEXTO);
         setBorder(BorderFactory.createCompoundBorder(

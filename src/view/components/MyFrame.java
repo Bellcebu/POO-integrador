@@ -13,7 +13,7 @@ public class MyFrame extends JFrame {
     }
 
     private void configurarFrame() {
-        setSize(1200, 700);
+        setSize(1300, 820);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBackground(Color.WHITE);
         setLocationRelativeTo(null);
